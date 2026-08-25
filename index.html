@@ -1,4 +1,4 @@
-$<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
@@ -1007,13 +1007,16 @@ $<!DOCTYPE html>
     </div>
 
     <!-- SCHERMATA CHECKOUT -->
-<div id="checkout-view" class="main-section">
-       <div id="checkout-total-banner" class="checkout-header-total">TOTALE CARRELLO: € 7.0</div>
-<div style="padding: 10px; text-align: center;">
-    <a href="https://wa.me/3937915190" target="_blank" style="display: block; background: #25d366; color: white; padding: 12px; border-radius: 8px; font-weight: bold; text-decoration: none;">
-        Ordina su WhatsApp
-    </a>
-</div>
+    <div id="checkout-view">
+        <div id="checkout-total-banner" class="checkout-header-total">TOTALE CARRELLO: € 7.0</div>
+
+        <!-- BOTTONE WHATSAPP INTEGRATO (RISOLTO PER MAC) -->
+        <div style="padding: 15px 20px; background: var(--bg-color);">
+            <button onclick="sendToWhatsApp()" style="width: 100%; background: #25d366; color: white; text-align: center; padding: 14px; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer;">
+                🟢 Ordina su WhatsApp
+            </button>
+        </div>
+
         <div class="checkout-section">
             <div class="checkout-title">Scegli il metodo di consegna</div>
             <div class="checkout-row">
@@ -1191,7 +1194,7 @@ $<!DOCTYPE html>
             <div>♡</div>
             PREFERITI
         </button>
-        <button class="nav-item" onclick="openSection('checkout-view', this)">
+        <button class="nav-item" onclick="openSection('section-cart', this)">
             <div>🛒</div>
             CARRELLO
         </button>
@@ -1238,7 +1241,7 @@ $<!DOCTYPE html>
             document.getElementById(sectionId).classList.add('active');
             btn.classList.add('active');
 
-            if (sectionId === 'checkout-view') {
+            if (sectionId === 'section-cart') {
                 renderCart();
             }
         }
@@ -1290,8 +1293,6 @@ $<!DOCTYPE html>
             document.getElementById('detail-price-label').innerText = `€ ${currentProductPrice.toFixed(2)} al PZ`;
             
             const grid = document.getElementById('ingredients-grid');
-            
-            // Mappatura dinamica degli ingredienti base in base al prodotto selezionato
             let ingredientsHTML = '';
             
             if (name === "CECIO CLASSIC") {
@@ -1342,12 +1343,10 @@ $<!DOCTYPE html>
                     <div class="chip" onclick="toggleChip(this)">SALSA CECIO</div>
                 `;
             } else {
-                // Default generico per altri prodotti (es. bibite, fritti, ecc. se aprono la modale)
                 ingredientsHTML = `<div style="font-size:12px; color:var(--gray-light);">Nessun ingrediente modificabile per questo articolo.</div>`;
             }
 
             grid.innerHTML = ingredientsHTML;
-
             document.getElementById('detail-notes').value = '';
             count = 1;
             updateTotals();
@@ -1444,7 +1443,6 @@ $<!DOCTYPE html>
             });
 
             let finalPayable = discountApplied ? grandTotal * 0.9 : grandTotal;
-
             document.getElementById('checkout-total-banner').innerText = `TOTALE CARRELLO: € ${finalPayable.toFixed(2).replace('.', ',')}`;
 
             html += `
@@ -1623,6 +1621,67 @@ $<!DOCTYPE html>
             closeCommentModal();
         }
 
+        // ==========================================
+        // FUNZIONE WHATSAPP OTTIMIZZATA PER MAC
+        // ==========================================
+        function sendToWhatsApp() {
+            if (cart.length === 0) {
+                showToast("Il carrello è vuoto!");
+                return;
+            }
+
+            // 1. Costruisci il testo riassuntivo dell'ordine
+            let orderText = "🍔 *NUOVO ORDINE - CECIO SMASH* 🍔\n\n";
+            let grandTotal = 0;
+
+            cart.forEach((item) => {
+                let itemTotal = item.price * item.quantity;
+                grandTotal += itemTotal;
+                orderText += `• ${item.quantity}x *${item.name}* (€ ${itemTotal.toFixed(2)})\n`;
+                
+                if (item.removed && item.removed.length > 0) {
+                    orderText += `  _Senza: ${item.removed.join(', ')}_\n`;
+                }
+                if (item.notes) {
+                    orderText += `  _Note: ${item.notes}_\n`;
+                }
+            });
+
+            if (discountApplied) {
+                grandTotal *= 0.9;
+                orderText += `\n🏷️ Sconto applicato: 10%`;
+            }
+
+            orderText += `\n💰 *TOTALE: € ${grandTotal.toFixed(2)}*`;
+            
+            if (finalSavedDatetime) {
+                orderText += `\n⏰ *Ritiro:* ${finalSavedDatetime}`;
+            }
+
+            let invName = document.getElementById('inv-name').value.trim();
+            if (invName) {
+                orderText += `\n📄 *Fattura richiesta per:* ${invName}`;
+            }
+
+            let commentVal = document.getElementById('comment-input').value.trim();
+            if (commentVal) {
+                orderText += `\n💬 *Note ordine:* ${commentVal}`;
+            }
+
+            // 2. Copia automatica negli appunti del Mac via JavaScript (Clipboard API)
+            navigator.clipboard.writeText(orderText).then(() => {
+                showToast("Testo copiato! Incolla su WhatsApp (Cmd + V)");
+                
+                // 3. Apre WhatsApp Web / App desktop pulita dopo un attimo
+                setTimeout(() => {
+                    window.open("https://wa.me/393791516109", "_blank");
+                }, 500);
+            }).catch(err => {
+                // Fallback se il browser blocca la clipboard in contesti particolari
+                window.open(`https://wa.me/393791516109?text=${encodeURIComponent(orderText)}`, "_blank");
+            });
+        }
+
         function concludeOrder() {
             let orderId = "SMASH-" + Math.floor(100000 + Math.random() * 900000);
             alert(`Ordine concluso con successo!\nCodice Ordine: #${orderId}\nGrazie per aver scelto Cecio Smash!`);
@@ -1630,6 +1689,6 @@ $<!DOCTYPE html>
             closeCheckout();
             openSection('section-menu', document.querySelectorAll('.nav-item')[0]);
         }
-
+    </script>
 </body>
 </html>
