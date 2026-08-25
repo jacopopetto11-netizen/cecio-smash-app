@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cecio Smash</title>
+    <style>
+        :root {
+            --bg-color: #0d0d0d;
+            --accent-yellow: #f3e600;
+            --text-color: #ffffff;
+            --gray-dark: #1a1a1a;
+            --gray-light: #888888;
+            --border-color: #262626;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding-bottom: 90px;
+        }
+
+        header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: var(--accent-yellow);
+        }
+
+        .hero-title {
+            padding: 10px 20px;
+            font-size: 32px;
+            font-weight: 900;
+            line-height: 1.1;
+        }
+
+        .hero-title span {
+            color: var(--accent-yellow);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            padding: 10px 20px;
+            overflow-x: auto;
+        }
+
+        .tab {
+            background: var(--gray-dark);
+            color: var(--text-color);
+            border: none;
+            padding: 8px 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .tab.active {
+            background: var(--accent-yellow);
+            color: #000;
+        }
+
+        .product-list {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .category-container {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .category-container.active {
+            display: flex;
+        }
+
+        .product-card {
+            background: var(--gray-dark);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .fav-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.6);
+            border: none;
+            color: #fff;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .fav-btn.active {
+            color: var(--accent-yellow);
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .product-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .product-info {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .product-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .product-desc {
+            color: var(--gray-light);
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .product-price {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--accent-yellow);
+            white-space: nowrap;
+            margin-left: 15px;
+        }
+
+        .main-section {
+            display: none;
+        }
+
+        .main-section.active {
+            display: block;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray-light);
+        }
+
+        .empty-state h2 {
+            color: var(--text-color);
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .btn-main {
+            background: var(--accent-yellow);
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            font-weight: bold;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .info-content {
+            padding: 20px;
+        }
+
+        .info-box {
+            background: var(--gray-dark);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #222;
+        }
+
+        .info-box h3 {
+            color: var(--accent-yellow);
+            margin-top: 0;
+        }
+
+        /* MODAL DETTAGLIO PRODOTTO */
+        #detail-view {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+            z-index: 2000;
+            overflow-y: auto;
+            padding-bottom: 110px;
+        }
+
+        .detail-header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-btn {
+            background: none;
+            border: 2px solid var(--accent-yellow);
+            color: var(--accent-yellow);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .detail-content {
+            padding: 0 20px 20px 20px;
+        }
+
+        .section-subtitle {
+            font-weight: bold;
+            font-size: 18px;
+            margin: 25px 0 10px 0;
+            color: #fff;
+        }
+
+        .allergens-row {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .allergen-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 11px;
+            color: var(--gray-light);
+            gap: 5px;
+        }
+
+        .allergen-icon {
+            width: 45px;
+            height: 45px;
+            background: #222;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            border: 1px solid #333;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .chip {
+            background: var(--gray-dark);
+            border: 1px solid var(--accent-yellow);
+            padding: 12px 15px;
+            border-radius: 6px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .chip.removed {
+            background: #333;
+            border-color: #444;
+            color: var(--gray-light);
+            text-decoration: line-through;
+        }
+
+        textarea, input[type="text"] {
+            width: 100%;
+            background: var(--gray-dark);
+            border: 1px solid #333;
+            color: #fff;
+            padding: 12px;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-family: inherit;
+            outline: none;
+        }
+
+        textarea {
+            resize: none;
+            height: 70px;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            border-color: var(--accent-yellow);
+        }
+
+        .action-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #000;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            box-sizing: border-box;
+            border-top: 1px solid #222;
+            z-index: 2100;
+        }
+
+        .counter-box {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .counter-controls {
+            display: flex;
+            align-items: center;
+            background: var(--gray-dark);
+            border-radius: 6px;
+            border: 1px solid var(--accent-yellow);
+        }
+
+        .counter-controls button {
+            background: none;
+            border: none;
+            color: var(--accent-yellow);
+            font-size: 18px;
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        .counter-controls span {
+            font-weight: bold;
+            font-size: 16px;
+            padding: 0 5px;
+        }
+
+        .add-to-cart-btn {
+            flex-grow: 1;
+            background: var(--accent-yellow);
+            color: #000;
+            border: none;
+            padding: 14px;
+            font-weight: bold;
+            font-size: 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        /* SCHERMATA CHECKOUT */
+        #checkout-view {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+            z-index: 2500;
+            overflow-y: auto;
+            padding-bottom: 50px;
+        }
+
+        .checkout-header-total {
+            padding: 20px;
+            font-size: 20px;
+            font-weight: 900;
+            border-bottom: 2px solid var(--accent-yellow);
+            background: var(--bg-color);
+            color: #fff;
+        }
+
+        .checkout-section {
+            border-bottom: 2px solid var(--accent-yellow);
+            padding: 20px;
+            background: var(--bg-color);
+        }
+
+        .checkout-title {
+            font-size: 20px;
+            font-weight: 900;
+            margin: 0 0 8px 0;
+            color: #fff;
+        }
+
+        .checkout-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 15px;
+            color: var(--gray-light);
+        }
+
+        .checkout-action {
+            color: var(--accent-yellow);
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        /* TOAST NOTIFICATION */
+        #toast-notification {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: var(--accent-yellow);
+            color: #000;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 6px;
+            padding: 12px;
+            position: fixed;
+            z-index: 4000;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            box-shadow: 0px 4px 12px rgba(0,0,0,0.5);
+            transition: visibility 0.3s, opacity 0.3s;
+            opacity: 0;
+        }
+        #toast-notification.show {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* MODALE DATA E ORA */
+        #datetime-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 3000;
+            justify-content: flex-end;
+            flex-direction: column;
+        }
+
+        .datetime-sheet {
+            background: var(--bg-color);
+            border-top: 2px solid var(--accent-yellow);
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            padding: 20px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+
+        .datetime-sheet-title {
+            color: var(--accent-yellow);
+            font-size: 22px;
+            font-weight: 900;
+            margin-bottom: 20px;
+        }
+
+        .days-scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .day-card {
+            min-width: 85px;
+            height: 85px;
+            background: var(--gray-dark);
+            border: 1px solid #333;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #fff;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .day-card.active {
+            background: var(--accent-yellow);
+            color: #000;
+            border-color: var(--accent-yellow);
+        }
+
+        .day-card .day-num {
+            font-size: 24px;
+            font-weight: 900;
+            margin: 2px 0;
+        }
+
+        .times-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            overflow-y: auto;
+            max-height: 180px;
+            padding-right: 5px;
+            margin-bottom: 25px;
+        }
+
+        .time-chip {
+            background: var(--gray-dark);
+            border: 1px solid #333;
+            color: #fff;
+            padding: 12px 5px;
+            text-align: center;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .time-chip.active {
+            background: var(--accent-yellow);
+            color: #000;
+            border-color: var(--accent-yellow);
+        }
+
+        .datetime-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-annulla {
+            flex: 1;
+            background: #b31414;
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn-salva {
+            flex: 1;
+            background: var(--accent-yellow);
+            color: #000;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        /* MODALE DATI FATTURA */
+        #invoice-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 3000;
+            justify-content: flex-end;
+            flex-direction: column;
+        }
+
+        .invoice-sheet {
+            background: var(--bg-color);
+            border-top: 2px solid var(--accent-yellow);
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            padding: 20px;
+            max-height: 90vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            color: var(--gray-light);
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #000;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid #222;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            text-align: center;
+            color: var(--gray-light);
+            text-decoration: none;
+            font-size: 12px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .nav-item.active {
+            color: var(--accent-yellow);
+        }
+
+        .nav-item div {
+            font-size: 18px;
+            margin-bottom: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">CECIO <span>SMASH</span></div>
+    </header>
+
+    <!-- NOTIFICA TOAST -->
+    <div id="toast-notification">Notifica</div>
+
+    <!-- SEZIONE MENU -->
+    <div id="section-menu" class="main-section active">
+        <div class="hero-title">
+            FAME?<br><span>SMASHALA.</span>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('burger', this)">BURGER</button>
+            <button class="tab" onclick="switchTab('fritti', this)">FRITTI</button>
+            <button class="tab" onclick="switchTab('dolci', this)">DOLCI</button>
+            <button class="tab" onclick="switchTab('bibite', this)">BIBITE</button>
+            <button class="tab" onclick="switchTab('salse', this)">SALSE</button>
+        </div>
+
+        <div class="product-list">
+            <!-- BURGER -->
+            <div id="burger" class="category-container active">
+                <div class="product-card" onclick="openProduct('CECIO CLASSIC', '7,00 €', '90g patty smash 100% manzo, American cheese, insalata, pomodoro, cipolla, bacon, salsa Cecio, bun tostato', 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80')">
+                    <button class="fav-btn" onclick="event.stopPropagation(); toggleFavorite(this, 'CECIO CLASSIC', '7,00 €', 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80')">♡</button>
+                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80" class="product-img" alt="Burger">
+                    <div class="product-info">
+                        <div>
+                            <div class="product-name">CECIO CLASSIC</div>
+                            <div class="product-desc">90g patty smash 100% manzo, American cheese, insalata, pomodoro, cipolla, bacon, salsa Cecio, bun tostato</div>
+                        </div>
+                        <div class="product-price">7,00 €</div>
+                    </div>
+                </div>
+
+                <div class="product-card" onclick="openProduct('CECIO JAM', '7,00 €', '90g patty smash 100% manzo, American cheese, bacon jam, pickles da decidere, salsa Cecio, bun tostato', 'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=800&q=80')">
+                    <button class="fav-btn" onclick="event.stopPropagation(); toggleFavorite(this, 'CECIO JAM', '7,00 €', 'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=800&q=80')">♡</button>
+                    <img src="https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=800&q=80" class="product-img" alt="Burger">
+                    <div class="product-info">
+                        <div>
+                            <div class="product-name">CECIO JAM</div>
+                            <div class="product-desc">90g patty smash 100% manzo, American cheese, bacon jam, pickles da decidere, salsa Cecio, bun tostato</div>
+                        </div>
+                        <div class="product-price">7,00 €</div>
+                    </div>
+                </div>
+
+                <div class="product-card" onclick="openProduct('CECIO LOS POLLOS', '8,00 €', 'Pollo fritto, insalata coleslaw, cetriolini, salsa Cecio, bun tostato', 'https://images.unsplash.com/photo-1625813506062-0aeb1d7a094b?auto=format&fit=crop&w=800&q=80')">
+                    <button class="fav-btn" onclick="event.stopPropagation(); toggleFavorite(this, 'CECIO LOS POLLOS', '8,00 €', 'https://images.unsplash.com/photo-1625813506062-0aeb1d7a094b?auto=format&fit=crop&w=800&q=80')">♡</button>
+                    <img src="https://images.unsplash.com/photo-1625813506062-0aeb1d7a094b?auto=format&fit=crop&w=800&q=80" class="product-img" alt="Chicken Burger">
+                    <div class="product-info">
+                        <div>
+                            <div class="product-name">CECIO LOS POLLOS</div>
+                            <div class="product-desc">Pollo fritto, insalata coleslaw, cetriolini, salsa Cecio, bun tostato</div>
+                        </div>
+                        <div class="product-price">8,00 €</div>
+                    </div>
+                </div>
+
+                <div class="product-card" onclick="openProduct('DOUBLE CHEESEBURGER', '5,00 €', '2 patty 45g, American cheese, cetriolini, ketchup, senape, bun tostato dalle 23:00', 'https://images.unsplash.com/photo-1583032015865-e66ce5096210?auto=format&fit=crop&w=800&q=80')">
+                    <button class="fav-btn" onclick="event.stopPropagation(); toggleFavorite(this, 'DOUBLE CHEESEBURGER', '5,00 €', 'https://images.unsplash.com/photo-1583032015865-e66ce5096210?auto=format&fit=crop&w=800&q=80')">♡</button>
+                    <img src="https://images.unsplash.com/photo-1583032015865-e66ce5096210?auto=format&fit=crop&w=800&q=80" class="product-img" alt="Double Cheeseburger">
+                    <div class="product-info">
+                        <div>
+                            <div class="product-name">DOUBLE CHEESEBURGER</div>
+                            <div class="product-desc">2 patty 45g, American cheese, cetriolini, ketchup, senape, bun tostato dalle 23:00</div>
+                        </div>
+                        <div class="product-price">5,00 €</div>
+                    </div>
+                </div>
+
+                <div class="product-card" onclick="openProduct('HOT DOG BACON', '5,00 €', 'Würstel, ketchup maionese e bacon', 'https://images.unsplash.com/photo-1619740455993-9e612b1af08a?auto=format&fit=crop&w=800&q=80')">
+                    <button class="fav-btn" onclick="event.stopPropagation(); toggleFavorite(this, 'HOT DOG BACON', '5,00 €', 'https://images.unsplash.com/photo-1619740455993-9e612b1af08a?auto=format&fit=crop&w=800&q=80')">♡</button>
+                    <img src="https://images.unsplash.com/photo-1619740455993-9e612b1af08a?auto=format&fit=crop&w=800&q=80" class="product-img" alt="Hot Dog">
+                    <div class="product-info">
+                        <div>
+                            <div class="product-name">HOT DOG BACON</div>
+                            <div class="product-desc">Würstel, ketchup maionese e bacon</div>
+                        </div>
+                        <div class="product-price">5,00 €</div>
+                    </div>
+                </div>
+
+                <div class="product-card" onclick="openProduct('HOT DOG JAM', '5,00 €', 'Würstel, bacon jam, salsa cecio', 'https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&w=800&q=80')">
+                    <button class="fav-btn" onclick="event.stopPropagation(); toggleFavorite(this, 'HOT DOG JAM', '5,00 €', 'https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&w=800&q=80')">♡</button>
+                    <img src="https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&w=800&q=80" class="product-img" alt="Hot Dog Jam">
+                    <div class="product-info">
+                        <div>
+                            <div class="product-name">HOT DOG JAM</div>
+                            <div class="product-desc">Würstel, bacon jam, salsa cecio</div>
+                        </div>
+                        <div class="product-price">5,00 €</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FRITTI -->
+            <div id="fritti" class="category-container">
+                <div class="product-card" onclick="openProduct('PATATINE', '3,50 €', 'Patatine fritte classiche', 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=800&q=80')">
+                    <button class="fav-btn" onclick="event.stopPropagation(); toggleFavorite(this, 'PATATINE', '3,50 €', 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=800&q=80')">♡</button>
+                    <img src="https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=800&q=80" class="product-img" alt="Patatine">
+                    <div class="product-info">
+                        <div>
+                            <div class="product-name">PATATINE</div>
+                            <div class="product-desc">Patatine fritte classiche</div>
+                        </div>
+                        <div class="product-price">3,50 €</div>
+                    </div>
+                </div>
+
+                <div class="product-card" onclick="openProduct('PATATINE AMERICANE', '4,50 €', 'Patatine dolci / americane', 'https://images.unsplash.com/photo-1518013431117-eb1445fa3cc5?auto=format&fit=crop&w=800&q=80')">
+                    <button class="fav-btn" onclick="event.stopPropagation(); toggleFavorite(this, 'PATATINE AMERICANE', '4,50 €', 'https://images.unsplash.com/photo-1518013431117-eb1445fa3cc5?auto=format&fit=crop&w=800&q=80')">♡</button>
+                    <img src="https://images.unsplash.com/photo-1518013431117-eb1445fa3cc5?auto=format&fit=crop&w=800&q=80" class="product-img" alt="Sweet Fries">
+                    <div class="product-info">
+                        <div>
+                            <div class="product-name">PATATINE AMERICANE</div>
+                            <div class="product-desc">Patatine dolci / americane</div>
+                        </div>
+                        <div class="product-price">4,50 €</div>
+                    </div>
+                </div>
+
+                <div class="product-card" onclick="openProduct('PATATINE AMERICANE CHEDDAR E BACON', '7,50 €', 'Patatine americane con cheddar colato e bacon croccante', 'https://images.unsplash.com/photo-1585109649139-366815a0d713?auto=format&fit=crop&w=800&q=80')">
+                    <button class="fav-btn" onclick="event.stopPropagation(); toggleFavorite(this, 'PATATINE AMERICANE CHEDDAR E BACON', '7,50 €', 'https://images.unsplash.com/photo-1585109649139-366815a0d713?auto=format&fit=crop&w=800&q=80')">♡</button>
+                    <img src="https://images.unsplash.com/photo-1585109649139-366815a0d713?auto=format&fit=crop&w=800&q=80" class="product-img" alt="Loaded Sweet Fries">
+                    <div class="product-info">
+                        <div>
+                            <div class="product-name">PATATINE AMERICANE CHEDDAR E BACON</div>
+                            <div class="product-desc">Patatine americane con cheddar colato e bacon croccante</div>
+                        </div>
+                        <div class="product-price">7,50 €</div>
+                    </div>
+                </div>
+
+                <div class="product-card" onclick="openProduct('PATATINE CHEDDAR E BACON', '6,50 €', 'Patatine fritte classiche con cheddar e bacon', 'https://images.unsplash.com/photo-1585109649139-366815a0d713?auto=format&fit=crop&w=800&q=80')">
+                    <button class="fav-btn" onclick="event.stopPropagation(); toggleFavorite(this, 'PATATINE CHEDDAR E BACON', '6,50 €', 'https://images.unsplash.com/photo-1585109649139-366815a0d713?auto=format&fit=crop&w=800&q=80')">♡</button>
+                    <img src="https://images.unsplash.com/photo-1585109649139-366815a0d713?auto=format&fit=crop&w=800&q=80" class="product-img" alt="Loaded Fries">
+                    <div class="product-info">
+                        <div>
+                            <div class="product-name">PATATINE CHEDDAR E BACON</div>
+                            <div class="product-desc">Patatine fritte classiche con cheddar e bacon</div>
+                        </div>
+                        <div class="product-price">6,50 €</div>
+                    </div>
+                </div>
+
+                <div class="product-card" onclick="openProduct('TENDERS DI POLLO 2PZ', '5,00 €', '2 deliziosi tenders di pollo fritto croccante', 'https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=800&q=80')">
+                    <button class="fav-btn" onclick="event.stopPropagation(); toggleFavorite(this, 'TENDERS DI POLLO 2PZ', '5,00 €', 'https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=800&q=80')">♡</button>
+                    <img src="https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=800&q=80" class="product-img" alt="Chicken Tenders">
+                    <div class="product-info">
+                        <div>
+                            <div class="product-name">TENDERS DI POLLO 2PZ</div>
+                            <div class="product-desc">2 deliziosi tenders di pollo fritto croccante</div>
+                        </div>
+                        <div class="product-price">5,00 €</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- DOLCI -->
+            <div id="dolci" class="category-container">
+                <div class="product-card" onclick="openProduct('COOKIES 1PZ', '3,00 €', 'Cookie artigianale con gocce di cioccolato', 'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=800&q=80')">
+                    <button class="fav-btn" onclick="event.stopPropagation(); toggleFavorite(this, 'COOKIES 1PZ', '3,00 €', 'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=800&q=80')">♡</button>
+                    <img src="https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=800&q=80" class="product-img" alt="Cookie">
+                    <div class="product-info">
+                        <div>
+                            <div class="product-name">COOKIES 1PZ</div>
+                            <div class="product-desc">Cookie artigianale con gocce di cioccolato</div>
+                        </div>
+                        <div class="product-price">3,00 €</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BIBITE -->
+            <div id="bibite" class="category-container">
+                <div class="product-card" onclick="openProduct('HEINEKEN 33CL', '3,50 €', 'Bottiglia 33cl', 'https://images.unsplash.com/photo-1608270105747-23f669389e82?auto=format&fit=crop&w=800&q=80')">
+                    <button class="fav-btn" onclick="event.stopPropagation(); toggleFavorite(this, 'HEINEKEN 33CL', '3,50 €', 'https://images.unsplash.com/photo-1608270105747-23f669389e82?auto=format&fit=crop&w=800&q=80')">♡</button>
+                    <img src="https://images.unsplash.com/photo-1608270105747-23f669389e82?auto=format&fit=crop&w=800&q=80" class="product-img" alt="Heineken">
+                    <div class="product-info">
+                        <div>
+                            <div class="product-name">HEINEKEN 33CL</div>
+                            <div class="product-desc">Bottiglia 33cl</div>
+                        </div>
+                        <div class="product-price">3,50 €</div>
+                    </div>
+                </div>
+
+                <div class="product-card" onclick="openProduct('CERES 33CL', '3,50 €', 'Birra Strong Ale 33cl', 'https://images.unsplash.com/photo-1618885472179-5e574620f4c9?auto=format&fit=crop&w=800&q=80')">
+                    <button class="fav-btn" onclick="event.stopPropagation(); toggleFavorite(this, 'CERES 33CL', '3,50 €', 'https://images.unsplash.com/photo-1618885472179-5e574620f4c9?auto=format&fit=crop&w=800&q=80')">♡</button>
+                    <img src="https://images.unsplash.com/photo-1618885472179-5e574620f4c9?auto=format&fit=crop&w=800&q=80" class="product-img" alt="Ceres">
+                    <div class="product-info">
+                        <div>
+                            <div class="product-name">CERES 33CL</div>
+                            <div class="product-desc">Birra Strong Ale 33cl</div>
+                        </div>
+                        <div class="product-price">3,50 €</div>
+                    </div>
+                </div>
+
+                <div class="product-card" onclick="openProduct('ACQUA NATURALE', '1,50 €', 'Bottiglietta d\'acqua naturale', 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?auto=format&fit=crop&w=800&q=80')">
+                    <button class="fav-btn" onclick="event.stopPropagation(); toggleFavorite(this, 'ACQUA NATURALE', '1,50 €', 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?auto=format&fit=crop&w=800&q=80')">♡</button>
+                    <img src="https://images.unsplash.com/photo-1548839140-29a749e1cf4d?auto=format&fit=crop&w=800&q=80" class="product-img" alt="Acqua Naturale">
+                    <div class="product-info">
+                        <div>
+                            <div class="product-name">ACQUA NATURALE</div>
+                            <div class="product-desc">Bottiglietta d'acqua naturale</div>
+                        </div>
+                        <div class="product-price">1,50 €</div>
+                    </div>
+                </div>
+
+                <div class="product-card" onclick="openProduct('ACQUA FRIZZANTE', '1,50 €', 'Bottiglietta d\'acqua frizzante', 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?auto=format&fit=crop&w=800&q=80')">
+                    <button class="fav-btn" onclick="event.stopPropagation(); toggleFavorite(this, 'ACQUA FRIZZANTE', '1,50 €', 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?auto=format&fit=crop&w=800&q=80')">♡</button>
+                    <img src="https://images.unsplash.com/photo-1548839140-29a749e1cf4d?auto=format&fit=crop&w=800&q=80" class="product-img" alt="Acqua Frizzante">
+                    <div class="product-info">
+                        <div>
+                            <div class="product-name">ACQUA FRIZZANTE</div>
+                            <div class="product-desc">Bottiglietta d'acqua frizzante</div>
+                        </div>
+                        <div class="product-price">1,50 €</div>
+                    </div>
+                </div>
+
+                <div class="product-card" onclick="openProduct('COCA COLA', '2,50 €', 'Lattina', 'https://images.unsplash.com/photo-1554866585-cd94860890b7?auto=format&fit=crop&w=800&q=80')">
+                    <button class="fav-btn" onclick="event.stopPropagation(); toggleFavorite(this, 'COCA COLA', '2,50 €', 'https://images.unsplash.com/photo-1554866585-cd94860890b7?auto=format&fit=crop&w=800&q=80')">♡</button>
+                    <img src="https://images.unsplash.com/photo-1554866585-cd94860890b7?auto=format&fit=crop&w=800&q=80" class="product-img" alt="Coca Cola">
+                    <div class="product-info">
+                        <div>
+                            <div class="product-name">COCA COLA</div>
+                            <div class="product-desc">Lattina</div>
+                        </div>
+                        <div class="product-price">2,50 €</div>
+                    </div>
+                </div>
+
+                <div class="product-card" onclick="openProduct('COCA COLA ZERO', '2,50 €', 'Lattina Zero Zuccheri', 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=800&q=80')">
+                    <button class="fav-btn" onclick="event.stopPropagation(); toggleFavorite(this, 'COCA COLA ZERO', '2,50 €', 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=800&q=80')">♡</button>
+                    <img src="https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=800&q=80" class="product-img" alt="Coca Cola Zero">
+                    <div class="product-info">
+                        <div>
+                            <div class="product-name">COCA COLA ZERO</div>
+                            <div class="product-desc">Lattina Zero Zuccheri</div>
+                        </div>
+                        <div class="product-price">2,50 €</div>
+                    </div>
+                </div>
+
+                <div class="product-card" onclick="openProduct('FANTA', '2,50 €', 'Lattina Fanta Aranciata', 'https://images.unsplash.com/photo-1624552184280-9e9632bbeee9?auto=format&fit=crop&w=800&q=80')">
+                    <button class="fav-btn" onclick="event.stopPropagation(); toggleFavorite(this, 'FANTA', '2,50 €', 'https://images.unsplash.com/photo-1624552184280-9e9632bbeee9?auto=format&fit=crop&w=800&q=80')">♡</button>
+                    <img src="https://images.unsplash.com/photo-1624552184280-9e9632bbeee9?auto=format&fit=crop&w=800&q=80" class="product-img" alt="Fanta">
+                    <div class="product-info">
+                        <div>
+                            <div class="product-name">FANTA</div>
+                            <div class="product-desc">Lattina Fanta Aranciata</div>
+                        </div>
+                        <div class="product-price">2,50 €</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SALSE -->
+            <div id="salse" class="category-container">
+                <div class="product-card" onclick="openProduct('HEINZ KETCHUP', '0,50 €', '1 bustina monodose ketchup Heinz', 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80')">
+                    <button class="fav-btn" onclick="event.stopPropagation(); toggleFavorite(this, 'HEINZ KETCHUP', '0,50 €', 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80')">♡</button>
+                    <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80" class="product-img" alt="Ketchup">
+                    <div class="product-info">
+                        <div>
+                            <div class="product-name">HEINZ KETCHUP</div>
+                            <div class="product-desc">1 bustina monodose ketchup Heinz</div>
+                        </div>
+                        <div class="product-price">0,50 €</div>
+                    </div>
+                </div>
+
+                <div class="product-card" onclick="openProduct('HEINZ MAIONESE', '0,50 €', '1 bustina monodose maionese Heinz', 'https://images.unsplash.com/photo-1472476443507-c7a5948774fc?auto=format&fit=crop&w=800&q=80')">
+                    <button class="fav-btn" onclick="event.stopPropagation(); toggleFavorite(this, 'HEINZ MAIONESE', '0,50 €', 'https://images.unsplash.com/photo-1472476443507-c7a5948774fc?auto=format&fit=crop&w=800&q=80')">♡</button>
+                    <img src="https://images.unsplash.com/photo-1472476443507-c7a5948774fc?auto=format&fit=crop&w=800&q=80" class="product-img" alt="Maionese">
+                    <div class="product-info">
+                        <div>
+                            <div class="product-name">HEINZ MAIONESE</div>
+                            <div class="product-desc">1 bustina monodose maionese Heinz</div>
+                        </div>
+                        <div class="product-price">0,50 €</div>
+                    </div>
+                </div>
+
+                <div class="product-card" onclick="openProduct('SALSA CECIO', '1,00 €', 'Porzione della nostra salsa segreta', 'https://images.unsplash.com/photo-1472476443507-c7a5948774fc?auto=format&fit=crop&w=800&q=80')">
+                    <button class="fav-btn" onclick="event.stopPropagation(); toggleFavorite(this, 'SALSA CECIO', '1,00 €', 'https://images.unsplash.com/photo-1472476443507-c7a5948774fc?auto=format&fit=crop&w=800&q=80')">♡</button>
+                    <img src="https://images.unsplash.com/photo-1472476443507-c7a5948774fc?auto=format&fit=crop&w=800&q=80" class="product-img" alt="Salsa Cecio">
+                    <div class="product-info">
+                        <div>
+                            <div class="product-name">SALSA CECIO</div>
+                            <div class="product-desc">Porzione della nostra salsa segreta</div>
+                        </div>
+                        <div class="product-price">1,00 €</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCHERMATA DETTAGLIO PRODOTTO (MODAL) -->
+    <div id="detail-view">
+        <div class="detail-header">
+            <button class="back-btn" onclick="closeProduct()">←</button>
+        </div>
+
+        <div class="detail-content">
+            <h2 id="detail-title" style="margin:0; font-size:26px; font-weight:900;">TITOLO PRODOTTO</h2>
+            <div id="detail-price-label" style="font-size:18px; font-weight:bold; color:var(--accent-yellow); margin: 5px 0 10px 0;">€ 7,0 al PZ</div>
+            <p id="detail-desc" style="color:var(--gray-light); font-size:14px; line-height: 1.4; margin-bottom: 25px;"></p>
+
+            <div class="section-subtitle" style="margin-top:0;">Allergeni</div>
+            <div class="allergens-row">
+                <div class="allergen-item"><div class="allergen-icon">🐟</div>PESCE</div>
+                <div class="allergen-item"><div class="allergen-icon">🥛</div>LATTE</div>
+                <div class="allergen-item"><div class="allergen-icon">🌾</div>GLUTINE</div>
+                <div class="allergen-item"><div class="allergen-icon">🟡</div>SENAPE</div>
+                <div class="allergen-item"><div class="allergen-icon">🥚</div>UOVA</div>
+            </div>
+
+            <div class="section-subtitle">Ingredienti base</div>
+            <div style="font-size: 12px; color: var(--gray-light); margin-bottom: 12px;">*Deseleziona gli ingredienti che desideri rimuovere</div>
+            <div class="options-grid" id="ingredients-grid"></div>
+
+            <div class="section-subtitle">Note aggiuntive</div>
+            <textarea id="detail-notes" placeholder="Inserisci note sul prodotto"></textarea>
+        </div>
+
+        <div class="action-bar">
+            <div class="counter-box">
+                <div style="font-size: 11px; color: var(--gray-light); margin-bottom: 3px;">PZ 1</div>
+                <div class="counter-controls">
+                    <button onclick="decrement()">-</button>
+                    <span id="qty" style="padding: 0 8px;">1</span>
+                    <button onclick="increment()">+</button>
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: column; flex-grow: 1;">
+                <div style="font-size: 11px; color: var(--gray-light); text-align: right;">TOTALE</div>
+                <div id="total-price-bar" style="font-size: 18px; font-weight: bold; color: var(--accent-yellow); text-align: right; margin-bottom: 4px;">€ 7,0</div>
+                <button class="add-to-cart-btn" onclick="addToCartFromModal()">AGGIUNGI AL CARRELLO</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCHERMATA CHECKOUT -->
+    <div id="checkout-view">
+        <div id="checkout-total-banner" class="checkout-header-total">TOTALE CARRELLO: € 7.0</div>
+
+        <div class="checkout-section">
+            <div class="checkout-title">Scegli il metodo di consegna</div>
+            <div class="checkout-row">
+                <span>RITIRO</span>
+            </div>
+        </div>
+
+        <div class="checkout-section">
+            <div class="checkout-title">Scegli data e ora</div>
+            <div class="checkout-row">
+                <span id="selected-datetime-label">Inserisci data ed ora di ritiro</span>
+                <span class="checkout-action" onclick="openDatetimeModal()">Cambia</span>
+            </div>
+        </div>
+
+        <div class="checkout-section">
+            <div class="checkout-row" style="padding: 5px 0;">
+                <span id="invoice-status-label" style="color: #fff;">Ti serve la fattura? (opzionale)</span>
+                <span class="checkout-action" onclick="openInvoiceModal()">Cambia</span>
+            </div>
+        </div>
+
+        <div class="checkout-section">
+            <div class="checkout-title">Scegli un metodo di pagamento</div>
+            <div class="checkout-row">
+                <span>ALLA CONSEGNA</span>
+            </div>
+        </div>
+
+        <div class="checkout-section">
+            <div class="checkout-title">Codice sconto</div>
+            <div class="checkout-row">
+                <span id="discount-status-label">Inserisci un codice sconto</span>
+                <span class="checkout-action" onclick="openDiscountModal()">Cambia</span>
+            </div>
+        </div>
+
+        <div class="checkout-section">
+            <div class="checkout-title">Commenti</div>
+            <div class="checkout-row">
+                <span id="comment-status-label">Inserisci dei commenti relativi al tuo ordine (opzionale)</span>
+                <span class="checkout-action" onclick="openCommentModal()">Cambia</span>
+            </div>
+        </div>
+
+        <div style="padding: 30px 20px; text-align: center;">
+            <button onclick="concludeOrder()" style="background: none; border: 2px solid var(--accent-yellow); color: var(--accent-yellow); padding: 14px; width: 100%; font-weight: bold; font-size: 16px; border-radius: 8px; cursor: pointer; margin-bottom: 20px;">CONCLUDI ACQUISTO</button>
+            <span onclick="closeCheckout()" style="color: #ff4444; font-weight: bold; font-size: 14px; cursor: pointer; display: inline-block;">🗑️ Torna al carrello</span>
+        </div>
+    </div>
+
+    <!-- MODALE DATA E ORA -->
+    <div id="datetime-modal">
+        <div style="flex: 1;" onclick="closeDatetimeModal()"></div>
+        <div class="datetime-sheet">
+            <div class="datetime-sheet-title">Scegli data e ora</div>
+            
+            <div class="days-scroll" id="days-container"></div>
+            <div class="times-grid" id="times-container"></div>
+
+            <div class="datetime-actions">
+                <button class="btn-annulla" onclick="closeDatetimeModal()">Annulla</button>
+                <button class="btn-salva" onclick="saveDatetime()">Salva</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALE DATI FATTURA -->
+    <div id="invoice-modal">
+        <div style="flex: 1;" onclick="closeInvoiceModal()"></div>
+        <div class="invoice-sheet">
+            <div class="datetime-sheet-title">Dati Fattura</div>
+
+            <div class="form-group">
+                <label>RAGIONE SOCIALE / NOME E COGNOME</label>
+                <input type="text" id="inv-name" placeholder="Es. Mario Rossi o Azienda Srl">
+            </div>
+
+            <div class="form-group">
+                <label>PARTITA IVA / CODICE FISCALE</label>
+                <input type="text" id="inv-taxcode" placeholder="Es. RSSMRA80A01H501W o 01234567890">
+            </div>
+
+            <div class="form-group">
+                <label>INDIRIZZO SEDE / RESIDENZA</label>
+                <input type="text" id="inv-address" placeholder="Via, Città, CAP">
+            </div>
+
+            <div class="form-group">
+                <label>CODICE UNIVOCO O PEC</label>
+                <input type="text" id="inv-pec" placeholder="Es. M5UXCR1 o m.rossi@pec.it">
+            </div>
+
+            <div class="datetime-actions" style="margin-top: 15px;">
+                <button class="btn-annulla" onclick="closeInvoiceModal()">Annulla</button>
+                <button class="btn-salva" onclick="saveInvoiceData()">Salva</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALE CODICE SCONTO -->
+    <div id="discount-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; justify-content: flex-end; flex-direction: column;">
+        <div style="flex: 1;" onclick="closeDiscountModal()"></div>
+        <div class="invoice-sheet">
+            <div class="datetime-sheet-title">Codice Sconto</div>
+            <div class="form-group">
+                <label>INSERISCI CODICE</label>
+                <input type="text" id="disc-input" placeholder="Es. SMASH10">
+            </div>
+            <div class="datetime-actions" style="margin-top: 15px;">
+                <button class="btn-annulla" onclick="closeDiscountModal()">Annulla</button>
+                <button class="btn-salva" onclick="saveDiscountData()">Applica</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALE COMMENTI -->
+    <div id="comment-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; justify-content: flex-end; flex-direction: column;">
+        <div style="flex: 1;" onclick="closeCommentModal()"></div>
+        <div class="invoice-sheet">
+            <div class="datetime-sheet-title">Commenti sull'ordine</div>
+            <div class="form-group">
+                <label>NOTE AGGIUNTIVE</label>
+                <textarea id="comment-input" placeholder="Scrivi qui eventuali richieste per l'ordine..."></textarea>
+            </div>
+            <div class="datetime-actions" style="margin-top: 15px;">
+                <button class="btn-annulla" onclick="closeCommentModal()">Annulla</button>
+                <button class="btn-salva" onclick="saveCommentData()">Salva</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SEZIONE PREFERITI -->
+    <div id="section-favorites" class="main-section">
+        <div style="padding: 20px;">
+            <h2 style="font-size: 24px; margin-bottom: 20px;">I TUOI PREFERITI</h2>
+            <div id="favorites-list" class="product-list" style="padding: 0;">
+                <div class="empty-state" id="empty-fav">
+                    <p>Nessun preferito. Tocca il cuore su un prodotto per salvarlo qui.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SEZIONE CARRELLO -->
+    <div id="section-cart" class="main-section">
+        <div style="padding: 20px;">
+            <h2 style="font-size: 24px; margin-bottom: 20px;">IL TUO CARRELLO</h2>
+            <div id="cart-container"></div>
+        </div>
+    </div>
+
+    <!-- SEZIONE INFO -->
+    <div id="section-info" class="main-section">
+        <div class="info-content">
+            <div class="info-box">
+                <h3>Indirizzo</h3>
+                <p>VIALE SAN NILO, 5, Grottaferrata</p>
+                <a href="https://www.google.com/maps/search/?api=1&query=Viale+San+Nilo+5+Grottaferrata" target="_blank" style="display: block; background: var(--accent-yellow); color: #000; text-align: center; padding: 12px; font-weight: bold; border-radius: 6px; text-decoration: none; margin: 15px 0 25px 0;">
+                    📍 APRI NEL NAVIGATORE
+                </a>
+                <h3 style="margin-top: 20px;">Orari di apertura</h3>
+                <p>Lunedì - Domenica: 12:00 / 24:00</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM NAVIGATION -->
+    <div class="bottom-nav">
+        <button class="nav-item active" onclick="openSection('section-menu', this)">
+            <div>⚡</div>
+            MENU
+        </button>
+        <button class="nav-item" onclick="openSection('section-favorites', this)">
+            <div>♡</div>
+            PREFERITI
+        </button>
+        <button class="nav-item" onclick="openSection('section-cart', this)">
+            <div>🛒</div>
+            CARRELLO
+        </button>
+        <button class="nav-item" onclick="openSection('section-info', this)">
+            <div>ℹ</div>
+            INFO
+        </button>
+    </div>
+
+    <script>
+        let favorites = [];
+        let cart = [];
+        let currentProductName = "";
+        let currentProductPrice = 7.0;
+        let currentProductImg = "";
+        let count = 1;
+
+        let selectedDayIndex = 0;
+        let selectedTimeValue = "12:30";
+        let finalSavedDatetime = "";
+        let discountApplied = false;
+
+        const monthsNames = ["GENNAIO", "FEBBRAIO", "MARZO", "APRILE", "MAGGIO", "GIUGNO", "LUGLIO", "AGOSTO", "SETTEMBRE", "OTTOBRE", "NOVEMBRE", "DICEMBRE"];
+        const daysNames = ["DOMENICA", "LUNEDÌ", "MARTEDÌ", "MERCOLEDÌ", "GIOVEDÌ", "VENERDÌ", "SABATO"];
+
+        function showToast(message) {
+            const toast = document.getElementById("toast-notification");
+            toast.innerText = message;
+            toast.className = "show";
+            setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+        }
+
+        function switchTab(categoryId, btn) {
+            document.querySelectorAll('.category-container').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+            document.getElementById(categoryId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        function openSection(sectionId, btn) {
+            document.querySelectorAll('.main-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(sectionId).classList.add('active');
+            btn.classList.add('active');
+
+            if (sectionId === 'section-cart') {
+                renderCart();
+            }
+        }
+
+        function toggleFavorite(btn, name, price, img) {
+            btn.classList.toggle('active');
+            const isFav = btn.classList.contains('active');
+            
+            if (isFav) {
+                btn.innerText = '♥';
+                favorites.push({ name, price, img });
+                showToast("Aggiunto ai preferiti!");
+            } else {
+                btn.innerText = '♡';
+                favorites = favorites.filter(item => item.name !== name);
+                showToast("Rimosso dai preferiti");
+            }
+            renderFavorites();
+        }
+
+        function renderFavorites() {
+            const favList = document.getElementById('favorites-list');
+            if (favorites.length === 0) {
+                favList.innerHTML = `<div class="empty-state" style="width: 100%;"><p>Nessun preferito.</p></div>`;
+                return;
+            }
+            let html = '';
+            favorites.forEach(item => {
+                html += `
+                    <div class="product-card">
+                        <img src="${item.img}" class="product-img" alt="${item.name}">
+                        <div class="product-info">
+                            <div><div class="product-name">${item.name}</div></div>
+                            <div class="product-price">${item.price}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            favList.innerHTML = html;
+        }
+
+        function openProduct(name, priceStr, desc, imgUrl) {
+            currentProductName = name;
+            currentProductImg = imgUrl;
+            document.getElementById('detail-title').innerText = name;
+            document.getElementById('detail-desc').innerText = desc;
+            
+            currentProductPrice = parseFloat(priceStr.replace('€', '').replace(',', '.').trim());
+            document.getElementById('detail-price-label').innerText = `€ ${currentProductPrice.toFixed(2)} al PZ`;
+            
+            const grid = document.getElementById('ingredients-grid');
+            
+            // Mappatura dinamica degli ingredienti base in base al prodotto selezionato
+            let ingredientsHTML = '';
+            
+            if (name === "CECIO CLASSIC") {
+                ingredientsHTML = `
+                    <div class="chip" onclick="toggleChip(this)">90G PATTY SMASH</div>
+                    <div class="chip" onclick="toggleChip(this)">AMERICAN CHEESE</div>
+                    <div class="chip" onclick="toggleChip(this)">INSALATA</div>
+                    <div class="chip" onclick="toggleChip(this)">POMODORO</div>
+                    <div class="chip" onclick="toggleChip(this)">SALSA CECIO</div>
+                    <div class="chip" onclick="toggleChip(this)">BUN TOSTATO</div>
+                `;
+            } else if (name === "HOT DOG JAM") {
+                ingredientsHTML = `
+                    <div class="chip" onclick="toggleChip(this)">WURSTEL</div>
+                    <div class="chip" onclick="toggleChip(this)">BACON JAM</div>
+                    <div class="chip" onclick="toggleChip(this)">SALSA CECIO</div>
+                `;
+            } else if (name === "CECIO JAM") {
+                ingredientsHTML = `
+                    <div class="chip" onclick="toggleChip(this)">90G PATTY SMASH</div>
+                    <div class="chip" onclick="toggleChip(this)">AMERICAN CHEESE</div>
+                    <div class="chip" onclick="toggleChip(this)">BACON JAM</div>
+                    <div class="chip" onclick="toggleChip(this)">SALSA CECIO</div>
+                    <div class="chip" onclick="toggleChip(this)">BUN TOSTATO</div>
+                    <div class="chip" onclick="toggleChip(this)">CETRIOLINI</div>
+                `;
+            } else if (name === "DOUBLE CHEESEBURGER") {
+                ingredientsHTML = `
+                    <div class="chip" onclick="toggleChip(this)">2 PATTY 45G</div>
+                    <div class="chip" onclick="toggleChip(this)">AMERICAN CHEESE</div>
+                    <div class="chip" onclick="toggleChip(this)">CETRIOLINI</div>
+                    <div class="chip" onclick="toggleChip(this)">KETCHUP</div>
+                    <div class="chip" onclick="toggleChip(this)">SENAPE</div>
+                    <div class="chip" onclick="toggleChip(this)">BUN TOSTATO</div>
+                `;
+            } else if (name === "HOT DOG BACON") {
+                ingredientsHTML = `
+                    <div class="chip" onclick="toggleChip(this)">WURSTEL</div>
+                    <div class="chip" onclick="toggleChip(this)">BACON CROCCANTE</div>
+                    <div class="chip" onclick="toggleChip(this)">KETCHUP</div>
+                    <div class="chip" onclick="toggleChip(this)">MAIONESE</div>
+                `;
+            } else if (name === "CECIO LOS POLLOS") {
+                ingredientsHTML = `
+                    <div class="chip" onclick="toggleChip(this)">POLLO FRITTO</div>
+                    <div class="chip" onclick="toggleChip(this)">INSALATA COLESLAW</div>
+                    <div class="chip" onclick="toggleChip(this)">CETRIOLINI</div>
+                    <div class="chip" onclick="toggleChip(this)">SALSA CECIO</div>
+                `;
+            } else {
+                // Default generico per altri prodotti (es. bibite, fritti, ecc. se aprono la modale)
+                ingredientsHTML = `<div style="font-size:12px; color:var(--gray-light);">Nessun ingrediente modificabile per questo articolo.</div>`;
+            }
+
+            grid.innerHTML = ingredientsHTML;
+
+            document.getElementById('detail-notes').value = '';
+            count = 1;
+            updateTotals();
+            document.getElementById('detail-view').style.display = 'block';
+        }
+
+        function closeProduct() {
+            document.getElementById('detail-view').style.display = 'none';
+        }
+
+        function toggleChip(el) {
+            el.classList.toggle('removed');
+        }
+
+        function increment() {
+            count++;
+            updateTotals();
+        }
+
+        function decrement() {
+            if(count > 1) {
+                count--;
+                updateTotals();
+            }
+        }
+
+        function updateTotals() {
+            document.getElementById('qty').innerText = count;
+            const total = (currentProductPrice * count).toFixed(2);
+            document.getElementById('total-price-bar').innerText = `€ ${total.replace('.', ',')}`;
+        }
+
+        function addToCartFromModal() {
+            let removedIngredients = [];
+            document.querySelectorAll('#ingredients-grid .chip.removed').forEach(chip => {
+                removedIngredients.push(chip.innerText);
+            });
+
+            let notes = document.getElementById('detail-notes').value;
+
+            cart.push({
+                name: currentProductName,
+                price: currentProductPrice,
+                quantity: count,
+                img: currentProductImg,
+                removed: removedIngredients,
+                notes: notes
+            });
+
+            closeProduct();
+            showToast("Prodotto aggiunto al carrello!");
+            openSection('section-cart', document.querySelectorAll('.bottom-nav .nav-item')[2]);
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cart-container');
+            
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h2>CARRELLO VUOTO</h2>
+                        <p>Aggiungi qualcosa dal menu, la fame non aspetta.</p>
+                        <button class="btn-main" onclick="openSection('section-menu', document.querySelectorAll('.nav-item')[0])">VAI AL MENU</button>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '<div style="display: flex; flex-direction: column; gap: 15px;">';
+            let grandTotal = 0;
+
+            cart.forEach((item, index) => {
+                let itemTotal = item.price * item.quantity;
+                grandTotal += itemTotal;
+
+                let customizations = '';
+                if (item.removed.length > 0) {
+                    customizations += `<div style="font-size: 11px; color: var(--gray-light);">Senza: ${item.removed.join(', ')}</div>`;
+                }
+                if (item.notes) {
+                    customizations += `<div style="font-size: 11px; color: var(--gray-light);">Note: ${item.notes}</div>`;
+                }
+
+                html += `
+                    <div style="background: var(--gray-dark); padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: bold; font-size: 16px;">${item.quantity}x ${item.name}</div>
+                            ${customizations}
+                            <div style="color: var(--accent-yellow); font-weight: bold; margin-top: 5px;">€ ${itemTotal.toFixed(2).replace('.', ',')}</div>
+                        </div>
+                        <button onclick="removeFromCart(${index})" style="background: none; border: none; color: #ff4444; font-size: 18px; cursor: pointer;">🗑️</button>
+                    </div>
+                `;
+            });
+
+            let finalPayable = discountApplied ? grandTotal * 0.9 : grandTotal;
+
+            document.getElementById('checkout-total-banner').innerText = `TOTALE CARRELLO: € ${finalPayable.toFixed(2).replace('.', ',')}`;
+
+            html += `
+                <div style="margin-top: 20px; border-top: 1px solid #333; padding-top: 15px; display: flex; justify-content: space-between; font-size: 20px; font-weight: bold;">
+                    <span>Totale Ordine:</span>
+                    <span style="color: var(--accent-yellow);">€ ${finalPayable.toFixed(2).replace('.', ',')}</span>
+                </div>
+                <button class="btn-main" style="width: 100%; margin-top: 20px;" onclick="openCheckout()">PROCEDI AL PAGAMENTO</button>
+            </div>`;
+
+            container.innerHTML = html;
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            showToast("Prodotto rimosso");
+            renderCart();
+        }
+
+        function openCheckout() {
+            document.getElementById('checkout-view').style.display = 'block';
+        }
+
+        function closeCheckout() {
+            document.getElementById('checkout-view').style.display = 'none';
+        }
+
+        function openDatetimeModal() {
+            buildDaysList();
+            buildTimesGrid();
+            document.getElementById('datetime-modal').style.display = 'flex';
+        }
+
+        function closeDatetimeModal() {
+            document.getElementById('datetime-modal').style.display = 'none';
+        }
+
+        function buildDaysList() {
+            const container = document.getElementById('days-container');
+            let html = '';
+            let today = new Date();
+
+            for (let i = 0; i < 14; i++) {
+                let d = new Date();
+                d.setDate(today.getDate() + i);
+                
+                let dayName = daysNames[d.getDay()];
+                let dayNum = d.getDate();
+                let monthName = monthsNames[d.getMonth()];
+                let activeClass = (i === selectedDayIndex) ? 'active' : '';
+
+                html += `
+                    <div class="day-card ${activeClass}" onclick="selectDay(${i}, '${dayName}', ${dayNum}, '${monthName}')">
+                        <div style="font-size: 10px;">${dayName}</div>
+                        <div class="day-num">${dayNum}</div>
+                        <div style="font-size: 10px;">${monthName}</div>
+                    </div>
+                `;
+            }
+            container.innerHTML = html;
+        }
+
+        function selectDay(index, dName, dNum, mName) {
+            selectedDayIndex = index;
+            window.chosenDateText = `${dName} ${dNum} ${mName}`;
+            buildDaysList();
+        }
+
+        function buildTimesGrid() {
+            const container = document.getElementById('times-container');
+            let html = '';
+            let startHour = 12;
+            let endHour = 24;
+
+            for (let h = startHour; h <= endHour; h++) {
+                for (let m = 0; m < 60; m += 15) {
+                    if (h === 24 && m > 0) break;
+                    
+                    let hh = String(h === 24 ? 0 : h).padStart(2, '0');
+                    if (h === 24) hh = "24";
+                    let mm = String(m).padStart(2, '0');
+                    let timeStr = `${hh}:${mm}`;
+                    
+                    let activeClass = (timeStr === selectedTimeValue) ? 'active' : '';
+                    html += `<div class="time-chip ${activeClass}" onclick="selectTime('${timeStr}')">${timeStr}</div>`;
+                }
+            }
+            container.innerHTML = html;
+        }
+
+        function selectTime(timeStr) {
+            selectedTimeValue = timeStr;
+            buildTimesGrid();
+        }
+
+        function saveDatetime() {
+            if (!window.chosenDateText) {
+                let today = new Date();
+                window.chosenDateText = `${daysNames[today.getDay()]} ${today.getDate()} ${monthsNames[today.getMonth()]}`;
+            }
+
+            finalSavedDatetime = `${window.chosenDateText} - ${selectedTimeValue}`;
+            document.getElementById('selected-datetime-label').innerText = finalSavedDatetime;
+            document.getElementById('selected-datetime-label').style.color = "#fff";
+            closeDatetimeModal();
+            showToast("Orario di ritiro salvato!");
+        }
+
+        function openInvoiceModal() {
+            document.getElementById('invoice-modal').style.display = 'flex';
+        }
+
+        function closeInvoiceModal() {
+            document.getElementById('invoice-modal').style.display = 'none';
+        }
+
+        function saveInvoiceData() {
+            let name = document.getElementById('inv-name').value.trim();
+            let label = document.getElementById('invoice-status-label');
+
+            if (name !== "") {
+                label.innerText = `Fattura richiesta (${name})`;
+                label.style.color = "var(--accent-yellow)";
+                showToast("Dati fattura salvati!");
+            } else {
+                label.innerText = `Ti serve la fattura? (opzionale)`;
+                label.style.color = "#fff";
+            }
+            closeInvoiceModal();
+        }
+
+        function openDiscountModal() {
+            document.getElementById('discount-modal').style.display = 'flex';
+        }
+
+        function closeDiscountModal() {
+            document.getElementById('discount-modal').style.display = 'none';
+        }
+
+        function saveDiscountData() {
+            let code = document.getElementById('disc-input').value.trim();
+            let label = document.getElementById('discount-status-label');
+            if (code !== "") {
+                discountApplied = true;
+                label.innerText = `Codice: ${code} (-10%)`;
+                label.style.color = "var(--accent-yellow)";
+                showToast("Codice sconto applicato!");
+                renderCart();
+            } else {
+                discountApplied = false;
+                label.innerText = `Inserisci un codice sconto`;
+                label.style.color = "#888888";
+            }
+            closeDiscountModal();
+        }
+
+        function openCommentModal() {
+            document.getElementById('comment-modal').style.display = 'flex';
+        }
+
+        function closeCommentModal() {
+            document.getElementById('comment-modal').style.display = 'none';
+        }
+
+        function saveCommentData() {
+            let val = document.getElementById('comment-input').value.trim();
+            let label = document.getElementById('comment-status-label');
+            if (val !== "") {
+                label.innerText = `Inserito (Salvato)`;
+                label.style.color = "var(--accent-yellow)";
+                showToast("Commento salvato!");
+            } else {
+                label.innerText = `Inserisci dei commenti relativi al tuo ordine (opzionale)`;
+                label.style.color = "#888888";
+            }
+            closeCommentModal();
+        }
+
+        function concludeOrder() {
+            let orderId = "SMASH-" + Math.floor(100000 + Math.random() * 900000);
+            alert(`Ordine concluso con successo!\nCodice Ordine: #${orderId}\nGrazie per aver scelto Cecio Smash!`);
+            cart = [];
+            closeCheckout();
+            openSection('section-menu', document.querySelectorAll('.nav-item')[0]);
+        }
+    </script>
+</body>
+</html>
