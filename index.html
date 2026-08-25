@@ -117,29 +117,6 @@
             text-shadow: 0 0 30px var(--accent-yellow-glow);
         }
 
-        .promo-banner {
-            margin: 12px 24px;
-            background: linear-gradient(135deg, rgba(245,230,0,0.15) 0%, rgba(20,20,20,0.8) 100%);
-            border: 1px solid rgba(245, 230, 0, 0.3);
-            border-radius: var(--radius-md);
-            padding: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .promo-text h4 {
-            font-size: 14px;
-            font-weight: 800;
-            color: var(--accent-yellow);
-        }
-
-        .promo-text p {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-
         /* SEARCH BAR */
         .search-container {
             padding: 8px 24px 16px 24px;
@@ -949,14 +926,6 @@
             FAME DI QUALITY?<br><span>SMASH IT RIGHT NOW.</span>
         </div>
 
-        <div class="promo-banner">
-            <div class="promo-text">
-                <h4>PROMO DEL MESE 🎉</h4>
-                <p>Usa il codice <strong>SMASH10</strong> per il 10% di sconto!</p>
-            </div>
-            <i data-lucide="sparkles" style="color: var(--accent-yellow); width: 24px; height: 24px;"></i>
-        </div>
-
         <div class="search-container">
             <div class="search-wrapper">
                 <i data-lucide="search"></i>
@@ -1419,7 +1388,7 @@
         </div>
     </div>
 
-    <!-- PREFERITI SECTION -->
+    <!-- PREFERITI SECTION (EX ACCOUNT) -->
     <div id="section-favorites" class="main-section">
         <div style="padding: 24px;">
             <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 20px;">I TUOI PREFERITI</h2>
@@ -1494,9 +1463,23 @@
         </div>
     </div>
 
-    <!-- INFO SECTION -->
+    <!-- INFO SECTION (INVERTITA E ARRICCHITA) -->
     <div id="section-info" class="main-section">
         <div style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+            
+            <!-- NUOVA SEZIONE: PERCHÉ VENIRCI A TROVARE -->
+            <div class="checkout-section" style="background: linear-gradient(135deg, rgba(245,230,0,0.12) 0%, rgba(26,26,26,0.9) 100%); border-color: rgba(245,230,0,0.3);">
+                <div class="checkout-title" style="color: var(--accent-yellow);"><i data-lucide="sparkles" style="width: 14px;"></i> Perché venirci a trovare?</div>
+                <p style="color: var(--text-color); font-size: 14px; line-height: 1.6; margin-bottom: 12px; font-weight: 600;">
+                    Da <strong>Cecio Smash</strong> non mangi semplicemente un burger: vivi un'esperienza di gusto autentica, preparata sul momento con ingredienti di prima scelta.
+                </p>
+                <ul style="color: var(--text-muted); font-size: 13px; line-height: 1.6; padding-left: 18px; display: flex; flex-direction: column; gap: 6px;">
+                    <li><strong>Carne 100% Manzo</strong> pressata alla perfezione sulla piastra rovente per una crosticina irresistibile.</li>
+                    <li><strong>Salse segrete artigianali</strong> preparate fresche per esaltare ogni singolo morso.</li>
+                    <li><strong>Atmosfera informale e dinamica</strong>, ideale per una pausa golosa o una serata tra amici.</li>
+                </ul>
+            </div>
+
             <div class="checkout-section">
                 <h3 style="color: var(--accent-yellow); font-size: 18px; margin-bottom: 8px;">Dove Siamo</h3>
                 <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 16px;">Viale San Nilo, 5, Grottaferrata (RM)</p>
@@ -1552,7 +1535,7 @@
         </div>
     </div>
 
-    <!-- BOTTOM NAVIGATION BAR -->
+    <!-- BOTTOM NAVIGATION BAR (INVERTITA E AGGIORNATA) -->
     <nav class="bottom-nav">
         <button class="nav-item active" onclick="openSection('section-menu', this)">
             <i data-lucide="utensils"></i>Prodotti
@@ -1561,11 +1544,11 @@
             <i data-lucide="shopping-bag"></i>Carrello
             <span id="cart-badge" class="cart-badge">0</span>
         </button>
+        <button class="nav-item" onclick="openSection('section-favorites', this)">
+            <i data-lucide="heart"></i>Preferiti
+        </button>
         <button class="nav-item" onclick="openSection('section-info', this)">
             <i data-lucide="info"></i>Info
-        </button>
-        <button class="nav-item" onclick="openSection('section-favorites', this)">
-            <i data-lucide="heart"></i>Account
         </button>
     </nav>
 
