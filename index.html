@@ -380,7 +380,9 @@
             text-align: center;
         }
 
-        /* SCHERMATA CHECKOUT */
+        /* ==========================================
+           SCHERMATA CHECKOUT "AMAZING" (BRANDED)
+           ========================================== */
         #checkout-view {
             display: none;
             position: fixed;
@@ -388,32 +390,74 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: var(--bg-color);
+            background-color: var(--bg-color);
             z-index: 2500;
             overflow-y: auto;
-            padding-bottom: 50px;
+            box-sizing: border-box;
+        }
+
+        /* Sfondo Mesh Gradient dinamico con i colori di Cecio Smash */
+        .checkout-mesh-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 10% 20%, rgba(243, 230, 0, 0.15) 0%, transparent 40%),
+                        radial-gradient(circle at 90% 80%, rgba(26, 26, 26, 0.9) 0%, transparent 50%),
+                        radial-gradient(circle at 50% 50%, rgba(243, 230, 0, 0.05) 0%, transparent 60%);
+            filter: blur(60px);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .checkout-wrapper-inner {
+            position: relative;
+            z-index: 2;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px 20px 60px 20px;
         }
 
         .checkout-header-total {
             padding: 20px;
             font-size: 20px;
             font-weight: 900;
-            border-bottom: 2px solid var(--accent-yellow);
-            background: var(--bg-color);
-            color: #fff;
+            color: var(--accent-yellow);
+            text-align: center;
+            background: rgba(26, 26, 26, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(243, 230, 0, 0.2);
+            border-radius: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
+        /* Sezioni in stile Glassmorphism con i colori dell'app */
         .checkout-section {
-            border-bottom: 2px solid var(--accent-yellow);
+            background: rgba(26, 26, 26, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
             padding: 20px;
-            background: var(--bg-color);
+            margin-bottom: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .checkout-section:hover {
+            border-color: rgba(243, 230, 0, 0.3);
         }
 
         .checkout-title {
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 900;
-            margin: 0 0 8px 0;
-            color: #fff;
+            margin: 0 0 10px 0;
+            color: var(--accent-yellow);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .checkout-row {
@@ -421,7 +465,7 @@
             justify-content: space-between;
             align-items: center;
             font-size: 15px;
-            color: var(--gray-light);
+            color: var(--text-color);
         }
 
         .checkout-action {
@@ -430,6 +474,62 @@
             font-size: 14px;
             cursor: pointer;
             text-decoration: none;
+            background: rgba(243, 230, 0, 0.1);
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(243, 230, 0, 0.3);
+            transition: background 0.2s;
+        }
+
+        .checkout-action:hover {
+            background: rgba(243, 230, 0, 0.2);
+        }
+
+        /* Pulsante WhatsApp "Pulse & Glow" personalizzato con il giallo Cecio */
+        .btn-whatsapp-amazing {
+            width: 100%;
+            background: #25d366;
+            color: white;
+            text-align: center;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 900;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(37, 211, 102, 0.4);
+            transition: transform 0.2s ease;
+            margin-bottom: 15px;
+        }
+
+        .btn-whatsapp-amazing:hover {
+            transform: scale(1.02);
+        }
+
+        .btn-conclude-amazing {
+            background: var(--accent-yellow);
+            color: #000;
+            border: none;
+            padding: 16px;
+            width: 100%;
+            font-weight: 900;
+            font-size: 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 0 25px rgba(243, 230, 0, 0.4);
+            animation: pulseYellow 2s infinite;
+            transition: transform 0.2s ease;
+            margin-bottom: 20px;
+        }
+
+        .btn-conclude-amazing:hover {
+            transform: scale(1.02);
+        }
+
+        @keyframes pulseYellow {
+            0% { box-shadow: 0 0 15px rgba(243, 230, 0, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(243, 230, 0, 0.7); }
+            100% { box-shadow: 0 0 15px rgba(243, 230, 0, 0.3); }
         }
 
         /* TOAST NOTIFICATION */
@@ -1006,65 +1106,71 @@
         </div>
     </div>
 
-    <!-- SCHERMATA CHECKOUT -->
+    <!-- ==========================================
+       SCHERMATA CHECKOUT "AMAZING" RIFATTA
+       ========================================== -->
     <div id="checkout-view">
-        <div id="checkout-total-banner" class="checkout-header-total">TOTALE CARRELLO: € 7.0</div>
+        <div class="checkout-mesh-bg"></div>
+        <div class="checkout-wrapper-inner">
+            <div id="checkout-total-banner" class="checkout-header-total">TOTALE CARRELLO: € 7.0</div>
 
-        <!-- BOTTONE WHATSAPP INTEGRATO (RISOLTO PER MAC) -->
-        <div style="padding: 15px 20px; background: var(--bg-color);">
-            <button onclick="sendToWhatsApp()" style="width: 100%; background: #25d366; color: white; text-align: center; padding: 14px; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer;">
+            <!-- BOTTONE WHATSAPP INTEGRATO AMAZING -->
+            <button class="btn-whatsapp-amazing" onclick="sendToWhatsApp()">
                 🟢 Ordina su WhatsApp
             </button>
-        </div>
 
-        <div class="checkout-section">
-            <div class="checkout-title">Scegli il metodo di consegna</div>
-            <div class="checkout-row">
-                <span>RITIRO</span>
+            <div class="checkout-section">
+                <div class="checkout-title">Metodo di consegna</div>
+                <div class="checkout-row">
+                    <span>RITIRO IN SEDE</span>
+                </div>
             </div>
-        </div>
 
-        <div class="checkout-section">
-            <div class="checkout-title">Scegli data e ora</div>
-            <div class="checkout-row">
-                <span id="selected-datetime-label">Inserisci data ed ora di ritiro</span>
-                <span class="checkout-action" onclick="openDatetimeModal()">Cambia</span>
+            <div class="checkout-section">
+                <div class="checkout-title">Data e Ora</div>
+                <div class="checkout-row">
+                    <span id="selected-datetime-label" style="color: var(--gray-light);">Seleziona data e ora di ritiro</span>
+                    <span class="checkout-action" onclick="openDatetimeModal()">Modifica</span>
+                </div>
             </div>
-        </div>
 
-        <div class="checkout-section">
-            <div class="checkout-row" style="padding: 5px 0;">
-                <span id="invoice-status-label" style="color: #fff;">Ti serve la fattura? (opzionale)</span>
-                <span class="checkout-action" onclick="openInvoiceModal()">Cambia</span>
+            <div class="checkout-section">
+                <div class="checkout-title">Fattura (Opzionale)</div>
+                <div class="checkout-row">
+                    <span id="invoice-status-label" style="color: var(--gray-light);">Aggiungi dati di fatturazione</span>
+                    <span class="checkout-action" onclick="openInvoiceModal()">Aggiungi</span>
+                </div>
             </div>
-        </div>
 
-        <div class="checkout-section">
-            <div class="checkout-title">Scegli un metodo di pagamento</div>
-            <div class="checkout-row">
-                <span>ALLA CONSEGNA</span>
+            <div class="checkout-section">
+                <div class="checkout-title">Metodo di pagamento</div>
+                <div class="checkout-row">
+                    <span>ALLA CONSEGNA</span>
+                </div>
             </div>
-        </div>
 
-        <div class="checkout-section">
-            <div class="checkout-title">Codice sconto</div>
-            <div class="checkout-row">
-                <span id="discount-status-label">Inserisci un codice sconto</span>
-                <span class="checkout-action" onclick="openDiscountModal()">Cambia</span>
+            <div class="checkout-section">
+                <div class="checkout-title">Codice Sconto</div>
+                <div class="checkout-row">
+                    <span id="discount-status-label" style="color: var(--gray-light);">Hai un codice promozionale?</span>
+                    <span class="checkout-action" onclick="openDiscountModal()">Inserisci</span>
+                </div>
             </div>
-        </div>
 
-        <div class="checkout-section">
-            <div class="checkout-title">Commenti</div>
-            <div class="checkout-row">
-                <span id="comment-status-label">Inserisci dei commenti relativi al tuo ordine (opzionale)</span>
-                <span class="checkout-action" onclick="openCommentModal()">Cambia</span>
+            <div class="checkout-section">
+                <div class="checkout-title">Commenti</div>
+                <div class="checkout-row">
+                    <span id="comment-status-label" style="color: var(--gray-light);">Note per la cucina (opzionale)</span>
+                    <span class="checkout-action" onclick="openCommentModal()">Aggiungi</span>
+                </div>
             </div>
-        </div>
 
-        <div style="padding: 30px 20px; text-align: center;">
-            <button onclick="concludeOrder()" style="background: none; border: 2px solid var(--accent-yellow); color: var(--accent-yellow); padding: 14px; width: 100%; font-weight: bold; font-size: 16px; border-radius: 8px; cursor: pointer; margin-bottom: 20px;">CONCLUDI ACQUISTO</button>
-            <span onclick="closeCheckout()" style="color: #ff4444; font-weight: bold; font-size: 14px; cursor: pointer; display: inline-block;">🗑️ Torna al carrello</span>
+            <div style="margin-top: 25px;">
+                <button class="btn-conclude-amazing" onclick="concludeOrder()">CONCLUDI ACQUISTO</button>
+                <div style="text-align: center;">
+                    <span onclick="closeCheckout()" style="color: #ff4444; font-weight: bold; font-size: 14px; cursor: pointer; display: inline-block;">🗑️ Torna al carrello</span>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1546,7 +1652,7 @@
 
             finalSavedDatetime = `${window.chosenDateText} - ${selectedTimeValue}`;
             document.getElementById('selected-datetime-label').innerText = finalSavedDatetime;
-            document.getElementById('selected-datetime-label').style.color = "#fff";
+            document.getElementById('selected-datetime-label').style.color = "var(--accent-yellow)";
             closeDatetimeModal();
             showToast("Orario di ritiro salvato!");
         }
@@ -1568,8 +1674,8 @@
                 label.style.color = "var(--accent-yellow)";
                 showToast("Dati fattura salvati!");
             } else {
-                label.innerText = `Ti serve la fattura? (opzionale)`;
-                label.style.color = "#fff";
+                label.innerText = `Aggiungi dati di fatturazione`;
+                label.style.color = "var(--gray-light)";
             }
             closeInvoiceModal();
         }
@@ -1593,8 +1699,8 @@
                 renderCart();
             } else {
                 discountApplied = false;
-                label.innerText = `Inserisci un codice sconto`;
-                label.style.color = "#888888";
+                label.innerText = `Hai un codice promozionale?`;
+                label.style.color = "var(--gray-light)";
             }
             closeDiscountModal();
         }
@@ -1611,12 +1717,12 @@
             let val = document.getElementById('comment-input').value.trim();
             let label = document.getElementById('comment-status-label');
             if (val !== "") {
-                label.innerText = `Inserito (Salvato)`;
+                label.innerText = `Nota inserita`;
                 label.style.color = "var(--accent-yellow)";
                 showToast("Commento salvato!");
             } else {
-                label.innerText = `Inserisci dei commenti relativi al tuo ordine (opzionale)`;
-                label.style.color = "#888888";
+                label.innerText = `Note per la cucina (opzionale)`;
+                label.style.color = "var(--gray-light)";
             }
             closeCommentModal();
         }
@@ -1630,7 +1736,6 @@
                 return;
             }
 
-            // 1. Costruisci il testo riassuntivo dell'ordine
             let orderText = "🍔 *NUOVO ORDINE - CECIO SMASH* 🍔\n\n";
             let grandTotal = 0;
 
@@ -1668,16 +1773,12 @@
                 orderText += `\n💬 *Note ordine:* ${commentVal}`;
             }
 
-            // 2. Copia automatica negli appunti del Mac via JavaScript (Clipboard API)
             navigator.clipboard.writeText(orderText).then(() => {
                 showToast("Testo copiato! Incolla su WhatsApp (Cmd + V)");
-                
-                // 3. Apre WhatsApp Web / App desktop pulita dopo un attimo
                 setTimeout(() => {
                     window.open("https://wa.me/393791516109", "_blank");
                 }, 500);
             }).catch(err => {
-                // Fallback se il browser blocca la clipboard in contesti particolari
                 window.open(`https://wa.me/393791516109?text=${encodeURIComponent(orderText)}`, "_blank");
             });
         }
