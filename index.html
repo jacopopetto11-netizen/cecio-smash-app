@@ -1626,25 +1626,20 @@
             closeCheckout();
             openSection('section-menu', document.querySelectorAll('.nav-item')[0]);
         }
-    <script>
+<button id="btn-ordina">Procedi all'ordine</button>
 
-    <button id="btn-ordina">Procedi all'ordine</button>
+document.getElementById("btn-ordina").addEventListener("click", function() {
+    const numeroRistorante = "3937915190"; 
 
+    let messaggio = "Ciao! Vorrei effettuare un ordine:\n\n";
+    messaggio += "– 1x Cecio Smash Burger\n";
+    messaggio += "– Extra cheddar\n\n";
+    messaggio += "Orario di ritiro: 20:00";
 
-
-        
-    document.getElementById("btn-ordina").addEventListener("click", function() {
-        const numeroRistorante = "39379151910"; // Metti qui il numero del locale con il 39
-        
-        let messaggio = "Ciao! Vorrei effettuare un ordine:\n\n";
-        messaggio += "- 1x Cecio Smash Burger\n";
-        messaggio += "- Extra cheddar\n\n";
-        messaggio += "Orario di ritiro: 20:00";
-
-        const testoCodificato = encodeURIComponent(messaggio);
-        const urlWhatsApp = `https://wa.me/${numeroRistorante}?text=${testoCodificato}`;
-        window.open(urlWhatsApp, "_blank");
-    });
+    const testoCodificato = encodeURIComponent(messaggio);
+    const urlWhatsApp = `https://wa.me/${numeroRistorante}?text=${testoCodificato}`;
+    window.open(urlWhatsApp, "_blank");
+});
 </script>
 </body>
 </html>
