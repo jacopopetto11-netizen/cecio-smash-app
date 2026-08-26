@@ -163,6 +163,7 @@
             padding: 0 24px 16px 24px;
             overflow-x: auto;
             scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
         }
 
         .tabs::-webkit-scrollbar {
@@ -356,6 +357,7 @@
             backdrop-filter: blur(12px);
             z-index: 2000;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
             animation: fadeIn 0.25s ease;
         }
 
@@ -366,7 +368,7 @@
         .modal-sheet-content {
             background: var(--surface-color);
             min-height: 100vh;
-            padding-bottom: 120px;
+            padding-bottom: 140px;
             position: relative;
         }
 
@@ -431,6 +433,7 @@
             overflow-x: auto;
             padding-bottom: 5px;
             scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
         }
 
         .allergen-item {
@@ -509,7 +512,7 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            background: rgba(12, 12, 12, 0.85);
+            background: rgba(12, 12, 12, 0.92);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             padding: 16px 24px;
@@ -623,6 +626,64 @@
             background: rgba(245, 230, 0, 0.2);
         }
 
+        /* METODI DI PAGAMENTO & CARD FORM */
+        .payment-methods-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .payment-option-card {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-muted);
+            transition: var(--transition-fast);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .payment-option-card:hover {
+            border-color: var(--border-hover);
+            color: #fff;
+        }
+
+        .payment-option-card.active {
+            background: rgba(245, 230, 0, 0.08);
+            border-color: var(--accent-yellow);
+            color: var(--accent-yellow);
+        }
+
+        /* Menu a tendina dati carta di credito */
+        .card-details-container {
+            display: none;
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border-color);
+            flex-direction: column;
+            gap: 10px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .card-details-container.active {
+            display: flex;
+        }
+
+        .card-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
         .btn-whatsapp-amazing {
             width: 100%;
             background: #25d366;
@@ -646,6 +707,38 @@
         .btn-whatsapp-amazing:hover {
             transform: translateY(-2px);
             box-shadow: 0 0 35px rgba(37, 211, 102, 0.5);
+        }
+        .btn-pay-card {
+            width: 100%;
+            background: var(--accent-yellow);
+            color: #000;
+            text-align: center;
+            padding: 18px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 900;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 0 25px var(--accent-yellow-glow);
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-pay-card:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 0 35px rgba(245, 230, 0, 0.45);
+        }
+
+        .btn-pay-card:disabled {
+            background: #3a3a3a;
+            color: #777;
+            cursor: not-allowed;
+            box-shadow: none;
+            opacity: 0.75;
         }
 
         /* TOAST SYSTEM */
@@ -685,7 +778,7 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            background: rgba(10, 10, 10, 0.85);
+            background: rgba(10, 10, 10, 0.92);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             display: flex;
@@ -760,6 +853,7 @@
             display: flex;
             flex-direction: column;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .sheet-title {
@@ -776,6 +870,7 @@
             padding-bottom: 10px;
             margin-bottom: 15px;
             scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
         }
 
         .day-card {
@@ -819,6 +914,7 @@
             gap: 10px;
             max-height: 180px;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
             margin-bottom: 20px;
         }
 
@@ -1388,7 +1484,7 @@
         </div>
     </div>
 
-    <!-- PREFERITI SECTION (EX ACCOUNT) -->
+    <!-- PREFERITI SECTION -->
     <div id="section-favorites" class="main-section">
         <div style="padding: 24px;">
             <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 20px;">I TUOI PREFERITI</h2>
@@ -1404,7 +1500,7 @@
 
     <!-- CARRELLO SECTION -->
     <div id="section-cart" class="main-section">
-        <div style="padding: 24px;">
+        <div style="padding: 24px; padding-bottom: 140px;">
             <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 20px;">IL TUO CARRELLO</h2>
             <div id="cart-container"></div>
         </div>
@@ -1412,7 +1508,7 @@
 
     <!-- CHECKOUT MODAL SHEET -->
     <div id="checkout-view" class="modal-sheet">
-        <div class="modal-sheet-content" style="padding: 24px;">
+        <div class="modal-sheet-content" style="padding: 24px; padding-bottom: 140px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
                 <h2 style="font-size:22px; font-weight:900;">RIEPILOGO ORDINE</h2>
                 <button class="btn-round-icon" onclick="closeCheckout()"><i data-lucide="x"></i></button>
@@ -1422,7 +1518,7 @@
                 <div class="checkout-title"><i data-lucide="user" style="width: 14px;"></i> I tuoi dati</div>
                 <div style="display: flex; flex-direction: column; gap: 10px;">
                     <input type="text" id="customer-name" placeholder="Nome e Cognome *">
-                    <input type="tel" id="customer-phone" placeholder="Numero di Telefono *">
+                    <input type="tel" id="customer-phone" placeholder="Numero di Telefono *" inputmode="tel" autocomplete="tel" maxlength="16" oninput="validatePhoneField()" onblur="validatePhoneField()"><div id="phone-validation-message" style="font-size:11px; margin-top:-5px; min-height:15px;"></div>
                 </div>
             </div>
 
@@ -1431,6 +1527,30 @@
                 <div class="checkout-row">
                     <span id="selected-datetime-label" style="color: var(--text-muted);">Seleziona orario</span>
                     <span class="checkout-action" onclick="openDatetimeModal()">Scegli</span>
+                </div>
+            </div>
+
+            <!-- SEZIONE METODI DI PAGAMENTO & MENU A TENDINA CARTA -->
+            <div class="checkout-section">
+                <div class="checkout-title"><i data-lucide="credit-card" style="width: 14px;"></i> Metodo di Pagamento</div>
+                <div class="payment-methods-grid">
+                    <div class="payment-option-card active" id="pay-card" onclick="setPaymentMethod('card')">
+                        <i data-lucide="credit-card" style="width: 18px;"></i>
+                        <span>Carta di Credito</span>
+                    </div>
+                    <div class="payment-option-card" id="pay-cash" onclick="setPaymentMethod('cash')">
+                        <i data-lucide="banknote" style="width: 18px;"></i>
+                        <span>Paga al ritiro</span>
+                    </div>
+                </div>
+
+                <!-- Menu a tendina inserimento dati carta -->
+                <div class="card-details-container active" id="card-details-box">
+                    <input type="text" id="cc-number" placeholder="Numero Carta (es. 4532 •••• •••• ••••)" maxlength="19">
+                    <div class="card-row">
+                        <input type="text" id="cc-expiry" placeholder="MM/AA" maxlength="5">
+                        <input type="password" id="cc-cvv" placeholder="CVV" maxlength="4">
+                    </div>
                 </div>
             </div>
 
@@ -1460,14 +1580,17 @@
             <button class="btn-whatsapp-amazing" onclick="sendToWhatsApp()">
                 <i data-lucide="message-circle"></i> CONFERMA SU WHATSAPP
             </button>
+
+            <button id="btn-pay-card" class="btn-pay-card" type="button" onclick="payByCard()" disabled style="display:none;">
+                <i data-lucide="credit-card"></i> PAGA
+            </button>
         </div>
     </div>
 
-    <!-- INFO SECTION (INVERTITA E ARRICCHITA) -->
+    <!-- INFO SECTION -->
     <div id="section-info" class="main-section">
-        <div style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+        <div style="padding: 24px; padding-bottom: 140px; display: flex; flex-direction: column; gap: 16px;">
             
-            <!-- NUOVA SEZIONE: PERCHÉ VENIRCI A TROVARE -->
             <div class="checkout-section" style="background: linear-gradient(135deg, rgba(245,230,0,0.12) 0%, rgba(26,26,26,0.9) 100%); border-color: rgba(245,230,0,0.3);">
                 <div class="checkout-title" style="color: var(--accent-yellow);"><i data-lucide="sparkles" style="width: 14px;"></i> Perché venirci a trovare?</div>
                 <p style="color: var(--text-color); font-size: 14px; line-height: 1.6; margin-bottom: 12px; font-weight: 600;">
@@ -1535,7 +1658,7 @@
         </div>
     </div>
 
-    <!-- BOTTOM NAVIGATION BAR (INVERTITA E AGGIORNATA) -->
+    <!-- BOTTOM NAVIGATION BAR -->
     <nav class="bottom-nav">
         <button class="nav-item active" onclick="openSection('section-menu', this)">
             <i data-lucide="utensils"></i>Prodotti
@@ -1568,6 +1691,7 @@
         let selectedTimeValue = "12:30";
         let finalSavedDatetime = "";
         let discountApplied = false;
+        let selectedPayment = "card"; // Default pagamento carta
 
         const monthsNames = ["GEN", "FEB", "MAR", "APR", "MAG", "GIU", "LUG", "AGO", "SET", "OTT", "NOV", "DIC"];
         const daysNames = ["DOM", "LUN", "MAR", "MER", "GIO", "VEN", "SAB"];
@@ -1576,6 +1700,12 @@
         window.addEventListener('DOMContentLoaded', () => {
             updateCartBadge();
             renderFavorites();
+
+            ['cc-number', 'cc-expiry', 'cc-cvv'].forEach(id => {
+                document.getElementById(id).addEventListener('input', updatePayButtonState);
+            });
+
+            updatePayButtonState();
         });
 
         function showToast(message) {
@@ -1812,6 +1942,50 @@
         function openCheckout() { document.getElementById('checkout-view').classList.add('active'); }
         function closeCheckout() { document.getElementById('checkout-view').classList.remove('active'); }
 
+        function setPaymentMethod(method) {
+            selectedPayment = method;
+            document.getElementById('pay-card').classList.toggle('active', method === 'card');
+            document.getElementById('pay-cash').classList.toggle('active', method === 'cash');
+
+            const cardBox = document.getElementById('card-details-box');
+            const payButton = document.getElementById('btn-pay-card');
+
+            if (method === 'card') {
+                cardBox.classList.add('active');
+                payButton.style.display = 'flex';
+                updatePayButtonState();
+            } else {
+                cardBox.classList.remove('active');
+                payButton.style.display = 'none';
+                payButton.disabled = true;
+            }
+        }
+
+        function updatePayButtonState() {
+            const payButton = document.getElementById('btn-pay-card');
+            if (!payButton) return;
+
+            const ccNum = document.getElementById('cc-number').value.trim();
+            const ccExpiry = document.getElementById('cc-expiry').value.trim();
+            const ccCvv = document.getElementById('cc-cvv').value.trim();
+
+            payButton.disabled = !(ccNum && ccExpiry && ccCvv);
+        }
+
+        function payByCard() {
+            const ccNum = document.getElementById('cc-number').value.trim();
+            const ccExpiry = document.getElementById('cc-expiry').value.trim();
+            const ccCvv = document.getElementById('cc-cvv').value.trim();
+
+            if (!ccNum || !ccExpiry || !ccCvv) {
+                updatePayButtonState();
+                showToast("Inserisci numero carta, scadenza e CVV!");
+                return;
+            }
+
+            showToast("Pagamento pronto: collega qui il gateway di pagamento.");
+        }
+
         /* DATETIME PICKER MODAL */
         function openDatetimeModal() {
             buildDaysList();
@@ -1912,6 +2086,49 @@
             closeInvoiceModal();
         }
 
+        /* VALIDAZIONE NUMERO DI TELEFONO */
+        function normalizePhone(phone) {
+            return phone.replace(/[^0-9+]/g, '');
+        }
+
+        function isValidPhoneNumber(phone) {
+            const normalized = normalizePhone(phone);
+            const digits = normalized.replace(/\D/g, '');
+
+            if (digits.length < 9 || digits.length > 15) return false;
+            if (/^0+$/.test(digits)) return false;
+            if (/^1?2?3?4?5?6?7?8?9?0?$/.test(digits)) return false;
+            if (/^(\d)\1+$/.test(digits)) return false;
+
+            return true;
+        }
+
+        function validatePhoneField() {
+            const input = document.getElementById('customer-phone');
+            const message = document.getElementById('phone-validation-message');
+            if (!input || !message) return false;
+
+            const value = input.value.trim();
+
+            if (!value) {
+                message.innerText = '';
+                input.style.borderColor = '';
+                return false;
+            }
+
+            if (isValidPhoneNumber(value)) {
+                message.innerText = '✓ Numero valido';
+                message.style.color = 'var(--accent-yellow)';
+                input.style.borderColor = 'var(--accent-yellow)';
+                return true;
+            }
+
+            message.innerText = 'Inserisci un numero di telefono valido.';
+            message.style.color = 'var(--accent-red)';
+            input.style.borderColor = 'var(--accent-red)';
+            return false;
+        }
+
         /* WHATSAPP ORDER GENERATOR */
         function sendToWhatsApp() {
             if (cart.length === 0) return;
@@ -1924,10 +2141,26 @@
                 return;
             }
 
+            if (!isValidPhoneNumber(custPhone)) {
+                validatePhoneField();
+                showToast("Inserisci un numero di telefono valido!");
+                document.getElementById('customer-phone').focus();
+                return;
+            }
+
+            if (selectedPayment === 'card') {
+                let ccNum = document.getElementById('cc-number').value.trim();
+                if (!ccNum) {
+                    showToast("Inserisci i dati della carta di credito!");
+                    return;
+                }
+            }
+
             let orderText = `🍔 *NUOVO ORDINE - CECIO SMASH* 🍔\n\n`;
             orderText += `👤 *Cliente:* ${custName}\n`;
             orderText += `📞 *Tel:* ${custPhone}\n`;
-            orderText += `⏰ *Ritiro Previsto:* ${finalSavedDatetime}\n\n`;
+            orderText += `⏰ *Ritiro Previsto:* ${finalSavedDatetime}\n`;
+            orderText += `💳 *Metodo di Pagamento:* ${selectedPayment === 'card' ? 'Carta di Credito (Dati inseriti)' : 'Pagamento al ritiro'}\n\n`;
             orderText += `*PRODOTTI ORDINATI:*\n`;
 
             let grandTotal = 0;
