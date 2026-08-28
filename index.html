@@ -663,7 +663,6 @@
             color: var(--accent-yellow);
         }
 
-        /* Menu a tendina dati carta di credito */
         .card-details-container {
             display: none;
             margin-top: 14px;
@@ -1681,7 +1680,6 @@
                     </div>
                 </div>
 
-                <!-- Menu a tendina inserimento dati carta -->
                 <div class="card-details-container active" id="card-details-box">
                     <input type="text" id="cc-number" placeholder="Numero Carta (es. 4532 •••• •••• ••••)" maxlength="19">
                     <div class="card-row">
@@ -2125,205 +2123,8 @@
         function removeFromCart(index) {
             cart.splice(index, 1);
             updateCartBadge();
-            showToast("Prodotto rimosso");
             renderCart();
-        }
-
-        function openCheckout() { document.getElementById('checkout-view').classList.add('active'); }
-        function closeCheckout() { document.getElementById('checkout-view').classList.remove('active'); }
-
-        function setPaymentMethod(method) {
-            selectedPayment = method;
-            document.getElementById('pay-card').classList.toggle('active', method === 'card');
-            document.getElementById('pay-cash').classList.toggle('active', method === 'cash');
-
-            const cardBox = document.getElementById('card-details-box');
-            const payButton = document.getElementById('btn-pay-card');
-
-            if (method === 'card') {
-                cardBox.classList.add('active');
-                payButton.style.display = 'flex';
-                updatePayButtonState();
-            } else {
-                cardBox.classList.remove('active');
-                payButton.style.display = 'none';
-                payButton.disabled = true;
-            }
-        }
-
-        function updatePayButtonState() {
-            const btn = document.getElementById('btn-pay-card');
-            if(!btn) return;
-            if (selectedPayment === 'cash') {
-                btn.disabled = false;
-                return;
-            }
-            const ccNum = document.getElementById('cc-number').value.trim();
-            const ccExp = document.getElementById('cc-expiry').value.trim();
-            const ccCvv = document.getElementById('cc-cvv').value.trim();
-
-            if (ccNum.length >= 15 && ccExp.length >= 4 && ccCvv.length >= 3) {
-                btn.disabled = false;
-            } else {
-                btn.disabled = true;
-            }
-        }
-
-        function validatePhoneField() {
-            const phoneInput = document.getElementById('customer-phone');
-            const msg = document.getElementById('phone-validation-message');
-            if(!phoneInput || !msg) return true;
-            const val = phoneInput.value.trim();
-            if (val.length < 5) {
-                msg.innerText = "Inserisci un numero valido";
-                msg.style.color = "var(--accent-red)";
-                return false;
-            } else {
-                msg.innerText = "Numero valido ✓";
-                msg.style.color = "#4ade80";
-                return true;
-            }
-        }
-
-        /* DATETIME PICKER ENGINE */
-        function initDatetimePicker() {
-            const daysContainer = document.getElementById('days-container');
-            const timesContainer = document.getElementById('times-container');
-            if(!daysContainer || !timesContainer) return;
-
-            let daysHTML = '';
-            let today = new Date();
-
-            for (let i = 0; i < 7; i++) {
-                let d = new Date(today);
-                d.setDate(today.getDate() + i);
-                let dayName = daysNames[d.getDay()];
-                let dayNum = d.getDate();
-                let monthName = monthsNames[d.getMonth()];
-
-                daysHTML += `
-                    <div class="day-card ${i === 0 ? 'active' : ''}" onclick="selectDay(this, ${i}, '${dayName} ${dayNum} ${monthName}')">
-                        <div>${dayName}</div>
-                        <div class="day-num">${dayNum}</div>
-                        <div style="font-size:9px;">${monthName}</div>
-                    </div>
-                `;
-            }
-            daysContainer.innerHTML = daysHTML;
-
-            let timesHTML = '';
-            let slots = ["12:00", "12:30", "13:00", "13:30", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00"];
-            slots.forEach((t, idx) => {
-                timesHTML += `<div class="time-chip ${idx === 1 ? 'active' : ''}" onclick="selectTime(this, '${t}')">${t}</div>`;
-            });
-            timesContainer.innerHTML = timesHTML;
-
-            finalSavedDatetime = `Oggi, ore 12:30`;
-        }
-
-        function selectDay(el, index, label) {
-            document.querySelectorAll('.day-card').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
-            selectedDayIndex = index;
-        }
-
-        function selectTime(el, timeStr) {
-            document.querySelectorAll('.time-chip').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
-            selectedTimeValue = timeStr;
-        }
-
-        function openDatetimeModal() { document.getElementById('datetime-modal').style.display = 'flex'; }
-        function closeDatetimeModal() { document.getElementById('datetime-modal').style.display = 'none'; }
-        
-        function saveDatetime() {
-            finalSavedDatetime = `Ore ${selectedTimeValue}`;
-            document.getElementById('selected-datetime-label').innerText = finalSavedDatetime;
-            document.getElementById('selected-datetime-label').style.color = "var(--text-color)";
-            closeDatetimeModal();
-            showToast("Orario di ritiro salvato!");
-        }
-
-        /* DISCOUNT MODAL */
-        function openDiscountModal() { document.getElementById('discount-modal').style.display = 'flex'; }
-        function closeDiscountModal() { document.getElementById('discount-modal').style.display = 'none'; }
-        
-        function saveDiscountData() {
-            let code = document.getElementById('disc-input').value.trim().toUpperCase();
-            if (code === "SMASH10" || code === "CECIO10") {
-                discountApplied = true;
-                document.getElementById('discount-status-label').innerText = "Sconto 10% Applicato ✓";
-                document.getElementById('discount-status-label').style.color = "#4ade80";
-                showToast("Codice promo applicato con successo!");
-                closeDiscountModal();
-                renderCart();
-            } else {
-                showToast("Codice promo non valido");
-            }
-        }
-
-        /* INVOICE MODAL */
-        function openInvoiceModal() { document.getElementById('invoice-modal').style.display = 'flex'; }
-        function closeInvoiceModal() { document.getElementById('invoice-modal').style.display = 'none'; }
-        
-        function saveInvoiceData() {
-            let name = document.getElementById('inv-name').value.trim();
-            if (name) {
-                document.getElementById('invoice-status-label').innerText = "Configurata ✓";
-                document.getElementById('invoice-status-label').style.color = "#4ade80";
-                showToast("Dati di fatturazione salvati");
-            }
-            closeInvoiceModal();
-        }
-
-        /* WHATSAPP SUBMISSION */
-        function sendToWhatsApp() {
-            let name = document.getElementById('customer-name').value.trim();
-            let phone = document.getElementById('customer-phone').value.trim();
-
-            if (!name || !phone) {
-                showToast("Inserisci nome e telefono obbligatori!");
-                return;
-            }
-
-            if (cart.length === 0) {
-                showToast("Il carrello è vuoto!");
-                return;
-            }
-
-            let text = `🍔 *NUOVO ORDINE - CECIO SMASH*\n\n`;
-            text += `👤 *Cliente:* ${name}\n`;
-            text += `📞 *Telefono:* ${phone}\n`;
-            text += `⏰ *Ritiro:* ${finalSavedDatetime}\n`;
-            text += `💳 *Pagamento:* ${selectedPayment === 'card' ? 'Carta di Credito' : 'Paga al ritiro'}\n\n`;
-            text += `📋 *Dettaglio Prodotti:*\n`;
-
-            let grandTotal = 0;
-            cart.forEach(item => {
-                let itemTotal = item.price * item.quantity;
-                grandTotal += itemTotal;
-                text += `• ${item.quantity}x ${item.name} (€ ${itemTotal.toFixed(2)})\n`;
-                if (item.removed && item.removed.length > 0) {
-                    text += `  _Senza: ${item.removed.join(', ')}_\n`;
-                }
-                if (item.notes) {
-                    text += `  _Note: ${item.notes}_\n`;
-                }
-            });
-
-            let finalPayable = discountApplied ? grandTotal * 0.9 : grandTotal;
-            text += `\n💰 *TOTALE: € ${finalPayable.toFixed(2)}*`;
-
-            let encoded = encodeURIComponent(text);
-            let whatsappUrl = `https://wa.me/393333333333?text=${encoded}`;
-            window.open(whatsappUrl, '_blank');
-        }
-
-        function payByCard() {
-            showToast("Pagamento con carta simulato con successo!");
-            setTimeout(() => {
-                sendToWhatsApp();
-            }, 1000);
+            showToast("Prodotto rimosso dal carrello");
         }
     </script>
 </body>
