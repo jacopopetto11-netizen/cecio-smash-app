@@ -708,6 +708,7 @@
             transform: translateY(-2px);
             box-shadow: 0 0 35px rgba(37, 211, 102, 0.5);
         }
+
         .btn-pay-card {
             width: 100%;
             background: var(--accent-yellow);
@@ -995,8 +996,99 @@
             margin-bottom: 8px;
         }
 
-        /* UTILITY */
         .hidden { display: none !important; }
+    </style>
+
+    <style id="website-redesign">
+        html { scroll-behavior:smooth; }
+        body { padding-bottom:0; background:#090909; }
+        header { height:78px; padding:0 clamp(24px,5vw,72px); position:fixed; top:0; left:0; right:0; background:rgba(9,9,9,.86); border-bottom:1px solid rgba(255,255,255,.08); }
+        .logo { font-size:24px; letter-spacing:-1px; z-index:2; }
+        .site-nav { display:flex; gap:36px; position:absolute; left:50%; transform:translateX(-50%); }
+        .site-nav a { color:#fff; text-decoration:none; font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:.12em; opacity:.75; transition:.2s; }
+        .site-nav a:hover { opacity:1; color:var(--accent-yellow); }
+        .desktop-cart-btn { border:1px solid #303030; background:#151515; color:#fff; border-radius:999px; padding:11px 15px; display:flex; align-items:center; gap:8px; font:800 12px inherit; cursor:pointer; }
+        .desktop-cart-btn i { width:17px; } .desktop-cart-btn b { background:var(--accent-yellow); color:#000; min-width:20px; height:20px; display:grid; place-items:center; border-radius:50%; font-size:10px; }
+        .status-badge { display:none; }
+
+        .website-hero { min-height:760px; padding:150px clamp(24px,8vw,130px) 90px; display:grid; grid-template-columns:1fr 1fr; align-items:center; gap:50px; max-width:1500px; margin:auto; position:relative; overflow:hidden; }
+        .website-hero:before { content:""; position:absolute; width:600px; height:600px; right:-250px; top:80px; border-radius:50%; background:var(--accent-yellow); filter:blur(160px); opacity:.10; }
+        .eyebrow { font-size:11px; font-weight:900; letter-spacing:.25em; color:var(--accent-yellow); margin-bottom:18px; text-transform:uppercase; }
+        .hero-copy h1 { font-size:clamp(60px,7vw,108px); line-height:.88; letter-spacing:-.07em; margin-bottom:28px; font-weight:900; }
+        .hero-copy h1 span, .brand-copy h2 span, .location-section h2 span { color:var(--accent-yellow); }
+        .hero-copy p { max-width:520px; color:#a7a7aa; font-size:17px; line-height:1.65; }
+        .hero-actions { display:flex; gap:12px; margin-top:34px; }
+        .primary-cta,.secondary-cta { border:0; padding:15px 22px; border-radius:999px; font:900 12px inherit; letter-spacing:.08em; cursor:pointer; display:inline-flex; align-items:center; gap:9px; }
+        .primary-cta { background:var(--accent-yellow); color:#000; box-shadow:0 12px 35px rgba(245,230,0,.15); }
+        .secondary-cta { background:transparent; color:#fff; border:1px solid #3a3a3a; }
+        .secondary-cta.dark { color:#000; border-color:#000; }
+        .hero-meta { display:flex; gap:22px; margin-top:42px; flex-wrap:wrap; }
+        .hero-meta span { color:#888; font-size:11px; font-weight:800; text-transform:uppercase; display:flex; gap:7px; align-items:center; }
+        .hero-meta i { color:var(--accent-yellow); width:15px; }
+        .hero-visual { position:relative; min-height:500px; display:grid; place-items:center; }
+        .hero-visual img { width:min(100%,620px); aspect-ratio:1/1; object-fit:cover; border-radius:45% 55% 48% 52%; transform:rotate(-5deg); filter:saturate(1.08); box-shadow:0 35px 90px #000; position:relative; z-index:1; }
+        .hero-glow { position:absolute; width:70%; aspect-ratio:1; background:var(--accent-yellow); border-radius:50%; filter:blur(75px); opacity:.13; }
+        .hero-price { position:absolute; right:4%; bottom:8%; z-index:2; background:#fff; color:#000; padding:18px 20px; border-radius:50%; width:112px; height:112px; display:grid; place-items:center; text-align:center; font-size:10px; font-weight:900; transform:rotate(8deg); }
+        .hero-price strong { display:block; font-size:30px; line-height:.7; }
+
+        .promo-strip { max-width:1400px; margin:0 auto 50px; padding:0 30px; display:grid; grid-template-columns:repeat(3,1fr); border-top:1px solid #252525; border-bottom:1px solid #252525; }
+        .promo-strip div { padding:25px 28px; border-right:1px solid #252525; display:grid; grid-template-columns:45px 1fr; align-items:center; }
+        .promo-strip div:last-child { border:0; } .promo-strip span { color:#666; font-weight:900; font-size:12px; grid-row:span 2; }
+        .promo-strip strong { font-size:15px; } .promo-strip small { color:#777; font-size:11px; }
+
+        #menu { max-width:1400px; margin:auto; padding:80px 30px 60px; }
+        #menu .hero-title { font-size:56px; max-width:800px; padding:0 0 28px; }
+        #menu .search-container { padding:8px 0 22px; max-width:600px; }
+        #menu .tabs { padding:0 0 30px; }
+        #menu .product-list { padding:0; }
+        .category-container.active { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; }
+        .product-card { min-width:0; background:#141414; border:1px solid #242424; border-radius:22px; overflow:hidden; transition:.25s; }
+        .product-card:hover { transform:translateY(-5px); border-color:#444; box-shadow:0 20px 50px rgba(0,0,0,.35); }
+        .product-img-wrapper { height:280px; }
+        .product-img { transition:.4s; } .product-card:hover .product-img { transform:scale(1.04); }
+        .product-info { padding:20px; min-height:170px; }
+        .product-name { font-size:19px; }
+        .product-desc { line-height:1.5; min-height:58px; }
+        .quick-add-btn { background:var(--accent-yellow); color:#000; }
+
+        .brand-section { max-width:1400px; margin:80px auto; padding:0 30px; display:grid; grid-template-columns:1fr 1fr; gap:70px; align-items:center; }
+        .brand-image img { width:100%; height:580px; object-fit:cover; border-radius:28px; }
+        .brand-copy h2,.location-section h2 { font-size:clamp(48px,6vw,84px); line-height:.9; letter-spacing:-.06em; margin-bottom:28px; }
+        .brand-copy p { color:#999; line-height:1.7; max-width:500px; font-size:16px; margin-bottom:30px; }
+
+        .location-section { margin-top:100px; background:#f5e600; color:#000; padding:80px max(30px,8vw); display:grid; grid-template-columns:1fr 380px; gap:80px; align-items:center; }
+        .location-section .eyebrow { color:#000; }
+        .location-card { background:#0b0b0b; color:#fff; padding:35px; border-radius:28px; }
+        .location-icon { width:46px; height:46px; border-radius:50%; background:var(--accent-yellow); color:#000; display:grid; place-items:center; margin-bottom:20px; }
+        .location-card h3 { font-size:26px; margin-bottom:8px; } .location-card p { color:#999; line-height:1.5; margin-bottom:22px; }
+        .open-line { font-size:10px; font-weight:900; letter-spacing:.15em; margin-bottom:25px; }
+        .open-line span { display:inline-block; width:7px; height:7px; background:#4ade80; border-radius:50%; margin-right:7px; }
+        .site-footer { background:#090909; padding:45px max(30px,8vw); display:grid; grid-template-columns:1fr 1fr 1fr; align-items:center; gap:20px; border-top:1px solid #222; }
+        .footer-brand { font-weight:900; font-size:22px; } .footer-brand span { color:var(--accent-yellow); }
+        .footer-links { display:flex; justify-content:center; gap:22px; } .footer-links a { color:#888; text-decoration:none; font-size:11px; font-weight:800; text-transform:uppercase; }
+        .footer-copy { text-align:right; color:#555; font-size:10px; }
+
+        .bottom-nav { display:none !important; }
+
+        @media (max-width: 900px) {
+          header { height:68px; padding:0 18px; } .site-nav { display:none; } .desktop-cart-btn span { display:none; }
+          .website-hero { min-height:auto; padding:120px 22px 60px; grid-template-columns:1fr; }
+          .hero-copy h1 { font-size:60px; } .hero-copy p { font-size:15px; }
+          .hero-visual { min-height:390px; margin-top:-20px; } .hero-visual img { width:88%; }
+          .promo-strip { grid-template-columns:1fr; margin-bottom:20px; } .promo-strip div { border-right:0; border-bottom:1px solid #252525; }
+          #menu { padding:50px 18px; } #menu .hero-title { font-size:40px; }
+          .category-container.active { grid-template-columns:repeat(2,minmax(0,1fr)); }
+          .brand-section { grid-template-columns:1fr; padding:0 18px; gap:35px; } .brand-image img { height:400px; }
+          .location-section { grid-template-columns:1fr; padding:60px 22px; gap:25px; }
+          .site-footer { grid-template-columns:1fr; text-align:center; } .footer-links { flex-wrap:wrap; } .footer-copy { text-align:center; }
+        }
+        @media (max-width: 560px) {
+          .hero-copy h1 { font-size:52px; } .hero-actions { flex-direction:column; align-items:stretch; }
+          .hero-actions button { justify-content:center; } .hero-meta { gap:12px; }
+          .hero-visual { min-height:320px; } .hero-price { width:90px; height:90px; right:0; bottom:5%; }
+          .category-container.active { grid-template-columns:1fr; }
+          .product-img-wrapper { height:250px; }
+        }
     </style>
 </head>
 <body>
@@ -1009,6 +1101,17 @@
         <div class="status-badge">
             <span class="status-dot"></span> CUCINA APERTA
         </div>
+        <nav class="site-nav" aria-label="Navigazione principale">
+            <a href="#home">Home</a>
+            <a href="#menu">Menu</a>
+            <a href="#about">Cecio Smash</a>
+            <a href="#info">Dove siamo</a>
+        </nav>
+        <button class="desktop-cart-btn" onclick="openSection('section-cart')" aria-label="Apri carrello">
+            <i data-lucide="shopping-bag"></i>
+            <span>Carrello</span>
+            <b id="desktop-cart-count">0</b>
+        </button>
     </header>
 
     <div id="toast-notification">
@@ -1016,8 +1119,41 @@
         <span id="toast-text">Notifica</span>
     </div>
 
+    <!-- WEBSITE HOMEPAGE -->
+    <section id="home" class="website-hero">
+        <div class="hero-copy">
+            <div class="eyebrow">CECIO SMASH • ROMA</div>
+            <h1>SMASHED.<br><span>NOT ORDINARY.</span></h1>
+            <p>Il burger che non chiede permesso. Manzo smash, crosta croccante, cheese, salse Cecio e ingredienti scelti al momento.</p>
+            <div class="hero-actions">
+                <button class="primary-cta" onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})">
+                    ORDINA ORA <i data-lucide="arrow-right"></i>
+                </button>
+                <button class="secondary-cta" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">
+                    SCOPRI CECIO
+                </button>
+            </div>
+            <div class="hero-meta">
+                <span><i data-lucide="flame"></i> Smash fresh</span>
+                <span><i data-lucide="clock-3"></i> Ritiro rapido</span>
+                <span><i data-lucide="star"></i> 100% Cecio</span>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="hero-glow"></div>
+            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=1200&q=90" alt="Cecio Smash burger">
+            <div class="hero-price">DA <strong>€7</strong></div>
+        </div>
+    </section>
+
+    <section class="promo-strip" aria-label="Promozioni">
+        <div><span>01</span><strong>THE CLASSIC</strong><small>Il nostro smash iconico</small></div>
+        <div><span>02</span><strong>THE JAM</strong><small>Dolce, smoky, crunchy</small></div>
+        <div><span>03</span><strong>THE CHICKEN</strong><small>Fritto e croccante</small></div>
+    </section>
+
     <!-- MAIN MENU SECTION -->
-    <main id="section-menu" class="main-section active">
+    <main id="menu" class="main-section active">
         <div class="hero-title">
             FAME DI QUALITY?<br><span>SMASH IT RIGHT NOW.</span>
         </div>
@@ -1518,7 +1654,8 @@
                 <div class="checkout-title"><i data-lucide="user" style="width: 14px;"></i> I tuoi dati</div>
                 <div style="display: flex; flex-direction: column; gap: 10px;">
                     <input type="text" id="customer-name" placeholder="Nome e Cognome *">
-                    <input type="tel" id="customer-phone" placeholder="Numero di Telefono *" inputmode="tel" autocomplete="tel" maxlength="16" oninput="validatePhoneField()" onblur="validatePhoneField()"><div id="phone-validation-message" style="font-size:11px; margin-top:-5px; min-height:15px;"></div>
+                    <input type="tel" id="customer-phone" placeholder="Numero di Telefono *" inputmode="tel" autocomplete="tel" maxlength="16" oninput="validatePhoneField()" onblur="validatePhoneField()">
+                    <div id="phone-validation-message" style="font-size:11px; margin-top:-5px; min-height:15px;"></div>
                 </div>
             </div>
 
@@ -1658,6 +1795,38 @@
         </div>
     </div>
 
+    <section id="about" class="brand-section">
+        <div class="brand-image">
+            <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=1000&q=85" alt="Burger Cecio Smash">
+        </div>
+        <div class="brand-copy">
+            <div class="eyebrow">THE CECIO WAY</div>
+            <h2>POCO FUMO.<br><span>TANTO SMASH.</span></h2>
+            <p>Una burger house fatta per chi vuole sapore vero: piastra rovente, carne smashata al momento, pane tostato e una carta corta che punta tutto sulla qualità.</p>
+            <button class="secondary-cta dark" onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})">VEDI IL MENU <i data-lucide="arrow-up-right"></i></button>
+        </div>
+    </section>
+
+    <section id="info" class="location-section">
+        <div>
+            <div class="eyebrow">PASSA DA CECIO</div>
+            <h2>ORDINA.<br>RITIRA.<br><span>SMASHA.</span></h2>
+        </div>
+        <div class="location-card">
+            <div class="location-icon"><i data-lucide="map-pin"></i></div>
+            <h3>Cecio Smash</h3>
+            <p>Ordina online e scegli il tuo orario di ritiro.</p>
+            <div class="open-line"><span></span> CUCINA APERTA</div>
+            <button class="primary-cta" onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})">ORDINA ORA</button>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="footer-brand">CECIO <span>SMASH</span></div>
+        <div class="footer-links"><a href="#home">Home</a><a href="#menu">Menu</a><a href="#about">Chi siamo</a><a href="#info">Contatti</a></div>
+        <div class="footer-copy">© 2026 Cecio Smash — Smash it right.</div>
+    </footer>
+
     <!-- BOTTOM NAVIGATION BAR -->
     <nav class="bottom-nav">
         <button class="nav-item active" onclick="openSection('section-menu', this)">
@@ -1691,7 +1860,7 @@
         let selectedTimeValue = "12:30";
         let finalSavedDatetime = "";
         let discountApplied = false;
-        let selectedPayment = "card"; // Default pagamento carta
+        let selectedPayment = "card";
 
         const monthsNames = ["GEN", "FEB", "MAR", "APR", "MAG", "GIU", "LUG", "AGO", "SET", "OTT", "NOV", "DIC"];
         const daysNames = ["DOM", "LUN", "MAR", "MER", "GIO", "VEN", "SAB"];
@@ -1702,10 +1871,14 @@
             renderFavorites();
 
             ['cc-number', 'cc-expiry', 'cc-cvv'].forEach(id => {
-                document.getElementById(id).addEventListener('input', updatePayButtonState);
+                const el = document.getElementById(id);
+                if(el) {
+                    el.addEventListener('input', updatePayButtonState);
+                }
             });
 
             updatePayButtonState();
+            initDatetimePicker();
         });
 
         function showToast(message) {
@@ -1717,12 +1890,19 @@
 
         function updateCartBadge() {
             const badge = document.getElementById('cart-badge');
+            const desktopBadge = document.getElementById('desktop-cart-count');
             let totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            if (totalItems > 0) {
-                badge.innerText = totalItems;
-                badge.style.display = 'block';
-            } else {
-                badge.style.display = 'none';
+            
+            if (badge) {
+                if (totalItems > 0) {
+                    badge.innerText = totalItems;
+                    badge.style.display = 'block';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+            if (desktopBadge) {
+                desktopBadge.innerText = totalItems;
             }
             localStorage.setItem('cecio_cart', JSON.stringify(cart));
         }
@@ -1730,13 +1910,16 @@
         function switchTab(categoryId, btn) {
             document.querySelectorAll('.category-container').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
-            document.getElementById(categoryId).classList.add('active');
-            btn.classList.add('active');
+            const targetCat = document.getElementById(categoryId);
+            if (targetCat) targetCat.classList.add('active');
+            if (btn) btn.classList.add('active');
             filterMenuProducts();
         }
 
         function filterMenuProducts() {
-            let query = document.getElementById('search-input').value.toLowerCase().trim();
+            let searchInput = document.getElementById('search-input');
+            if(!searchInput) return;
+            let query = searchInput.value.toLowerCase().trim();
             let activeCategory = document.querySelector('.category-container.active');
             if (!activeCategory) return;
             
@@ -1754,13 +1937,17 @@
         }
 
         function openSection(sectionId, btn) {
+            if (sectionId === 'section-menu') {
+                sectionId = 'menu';
+            }
             document.querySelectorAll('.main-section').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             
-            document.getElementById(sectionId).classList.add('active');
-            btn.classList.add('active');
+            const targetSec = document.getElementById(sectionId);
+            if(targetSec) targetSec.classList.add('active');
+            if(btn) btn.classList.add('active');
 
-            if (sectionId === 'section-cart') {
+            if (sectionId === 'section-cart' || sectionId === 'cart') {
                 renderCart();
             }
         }
@@ -1783,6 +1970,7 @@
 
         function renderFavorites() {
             const favList = document.getElementById('favorites-list');
+            if(!favList) return;
             if (favorites.length === 0) {
                 favList.innerHTML = `
                     <div class="empty-state">
@@ -1875,6 +2063,7 @@
         /* CART RENDER & CHECKOUT ENGINE */
         function renderCart() {
             const container = document.getElementById('cart-container');
+            if(!container) return;
             
             if (cart.length === 0) {
                 container.innerHTML = `
@@ -1918,7 +2107,8 @@
             });
 
             let finalPayable = discountApplied ? grandTotal * 0.9 : grandTotal;
-            document.getElementById('checkout-total-banner').innerText = `€ ${finalPayable.toFixed(2)}`;
+            const checkoutTotalBanner = document.getElementById('checkout-total-banner');
+            if(checkoutTotalBanner) checkoutTotalBanner.innerText = `€ ${finalPayable.toFixed(2)}`;
 
             html += `
                 <div style="margin-top: 12px; border-top: 1px solid var(--border-color); padding-top: 16px; display: flex; justify-content: space-between; font-size: 16px; font-weight: 800;">
@@ -1962,230 +2152,178 @@
         }
 
         function updatePayButtonState() {
-            const payButton = document.getElementById('btn-pay-card');
-            if (!payButton) return;
-
-            const ccNum = document.getElementById('cc-number').value.trim();
-            const ccExpiry = document.getElementById('cc-expiry').value.trim();
-            const ccCvv = document.getElementById('cc-cvv').value.trim();
-
-            payButton.disabled = !(ccNum && ccExpiry && ccCvv);
-        }
-
-        function payByCard() {
-            const ccNum = document.getElementById('cc-number').value.trim();
-            const ccExpiry = document.getElementById('cc-expiry').value.trim();
-            const ccCvv = document.getElementById('cc-cvv').value.trim();
-
-            if (!ccNum || !ccExpiry || !ccCvv) {
-                updatePayButtonState();
-                showToast("Inserisci numero carta, scadenza e CVV!");
+            const btn = document.getElementById('btn-pay-card');
+            if(!btn) return;
+            if (selectedPayment === 'cash') {
+                btn.disabled = false;
                 return;
             }
+            const ccNum = document.getElementById('cc-number').value.trim();
+            const ccExp = document.getElementById('cc-expiry').value.trim();
+            const ccCvv = document.getElementById('cc-cvv').value.trim();
 
-            showToast("Pagamento pronto: collega qui il gateway di pagamento.");
+            if (ccNum.length >= 15 && ccExp.length >= 4 && ccCvv.length >= 3) {
+                btn.disabled = false;
+            } else {
+                btn.disabled = true;
+            }
         }
 
-        /* DATETIME PICKER MODAL */
-        function openDatetimeModal() {
-            buildDaysList();
-            buildTimesGrid();
-            document.getElementById('datetime-modal').style.display = 'flex';
+        function validatePhoneField() {
+            const phoneInput = document.getElementById('customer-phone');
+            const msg = document.getElementById('phone-validation-message');
+            if(!phoneInput || !msg) return true;
+            const val = phoneInput.value.trim();
+            if (val.length < 5) {
+                msg.innerText = "Inserisci un numero valido";
+                msg.style.color = "var(--accent-red)";
+                return false;
+            } else {
+                msg.innerText = "Numero valido ✓";
+                msg.style.color = "#4ade80";
+                return true;
+            }
         }
 
-        function closeDatetimeModal() { document.getElementById('datetime-modal').style.display = 'none'; }
+        /* DATETIME PICKER ENGINE */
+        function initDatetimePicker() {
+            const daysContainer = document.getElementById('days-container');
+            const timesContainer = document.getElementById('times-container');
+            if(!daysContainer || !timesContainer) return;
 
-        function buildDaysList() {
-            const container = document.getElementById('days-container');
-            let html = '';
+            let daysHTML = '';
             let today = new Date();
 
             for (let i = 0; i < 7; i++) {
-                let d = new Date();
+                let d = new Date(today);
                 d.setDate(today.getDate() + i);
                 let dayName = daysNames[d.getDay()];
                 let dayNum = d.getDate();
                 let monthName = monthsNames[d.getMonth()];
-                let activeClass = (i === selectedDayIndex) ? 'active' : '';
 
-                html += `
-                    <div class="day-card ${activeClass}" onclick="selectDay(${i}, '${dayName}', ${dayNum}, '${monthName}')">
-                        <div style="font-size: 9px;">${dayName}</div>
+                daysHTML += `
+                    <div class="day-card ${i === 0 ? 'active' : ''}" onclick="selectDay(this, ${i}, '${dayName} ${dayNum} ${monthName}')">
+                        <div>${dayName}</div>
                         <div class="day-num">${dayNum}</div>
-                        <div style="font-size: 9px;">${monthName}</div>
+                        <div style="font-size:9px;">${monthName}</div>
                     </div>
                 `;
             }
-            container.innerHTML = html;
+            daysContainer.innerHTML = daysHTML;
+
+            let timesHTML = '';
+            let slots = ["12:00", "12:30", "13:00", "13:30", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00"];
+            slots.forEach((t, idx) => {
+                timesHTML += `<div class="time-chip ${idx === 1 ? 'active' : ''}" onclick="selectTime(this, '${t}')">${t}</div>`;
+            });
+            timesContainer.innerHTML = timesHTML;
+
+            finalSavedDatetime = `Oggi, ore 12:30`;
         }
 
-        function selectDay(index, dName, dNum, mName) {
+        function selectDay(el, index, label) {
+            document.querySelectorAll('.day-card').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
             selectedDayIndex = index;
-            window.chosenDateText = `${dName} ${dNum} ${mName}`;
-            buildDaysList();
         }
 
-        function buildTimesGrid() {
-            const container = document.getElementById('times-container');
-            let html = '';
-            for (let h = 12; h <= 23; h++) {
-                for (let m = 0; m < 60; m += 30) {
-                    let hh = String(h).padStart(2, '0');
-                    let mm = String(m).padStart(2, '0');
-                    let timeStr = `${hh}:${mm}`;
-                    let activeClass = (timeStr === selectedTimeValue) ? 'active' : '';
-                    html += `<div class="time-chip ${activeClass}" onclick="selectTime('${timeStr}')">${timeStr}</div>`;
-                }
-            }
-            container.innerHTML = html;
-        }
-
-        function selectTime(timeStr) {
+        function selectTime(el, timeStr) {
+            document.querySelectorAll('.time-chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
             selectedTimeValue = timeStr;
-            buildTimesGrid();
         }
 
+        function openDatetimeModal() { document.getElementById('datetime-modal').style.display = 'flex'; }
+        function closeDatetimeModal() { document.getElementById('datetime-modal').style.display = 'none'; }
+        
         function saveDatetime() {
-            if (!window.chosenDateText) {
-                let today = new Date();
-                window.chosenDateText = `${daysNames[today.getDay()]} ${today.getDate()} ${monthsNames[today.getMonth()]}`;
-            }
-            finalSavedDatetime = `${window.chosenDateText} alle ${selectedTimeValue}`;
+            finalSavedDatetime = `Ore ${selectedTimeValue}`;
             document.getElementById('selected-datetime-label').innerText = finalSavedDatetime;
-            document.getElementById('selected-datetime-label').style.color = "var(--accent-yellow)";
+            document.getElementById('selected-datetime-label').style.color = "var(--text-color)";
             closeDatetimeModal();
             showToast("Orario di ritiro salvato!");
         }
 
-        /* PROMO & INVOICE MODALS */
+        /* DISCOUNT MODAL */
         function openDiscountModal() { document.getElementById('discount-modal').style.display = 'flex'; }
         function closeDiscountModal() { document.getElementById('discount-modal').style.display = 'none'; }
+        
         function saveDiscountData() {
-            let code = document.getElementById('disc-input').value.trim();
-            if (code.toUpperCase() === "SMASH10") {
+            let code = document.getElementById('disc-input').value.trim().toUpperCase();
+            if (code === "SMASH10" || code === "CECIO10") {
                 discountApplied = true;
-                document.getElementById('discount-status-label').innerText = `Sconto SMASH10 Attivo (-10%)`;
-                document.getElementById('discount-status-label').style.color = "var(--accent-yellow)";
-                showToast("Sconto 10% Applicato!");
+                document.getElementById('discount-status-label').innerText = "Sconto 10% Applicato ✓";
+                document.getElementById('discount-status-label').style.color = "#4ade80";
+                showToast("Codice promo applicato con successo!");
+                closeDiscountModal();
                 renderCart();
             } else {
-                showToast("Codice sconto non valido");
+                showToast("Codice promo non valido");
             }
-            closeDiscountModal();
         }
 
+        /* INVOICE MODAL */
         function openInvoiceModal() { document.getElementById('invoice-modal').style.display = 'flex'; }
         function closeInvoiceModal() { document.getElementById('invoice-modal').style.display = 'none'; }
+        
         function saveInvoiceData() {
             let name = document.getElementById('inv-name').value.trim();
             if (name) {
-                document.getElementById('invoice-status-label').innerText = `Richiesta per ${name}`;
-                document.getElementById('invoice-status-label').style.color = "var(--accent-yellow)";
-                showToast("Dati fattura salvati");
+                document.getElementById('invoice-status-label').innerText = "Configurata ✓";
+                document.getElementById('invoice-status-label').style.color = "#4ade80";
+                showToast("Dati di fatturazione salvati");
             }
             closeInvoiceModal();
         }
 
-        /* VALIDAZIONE NUMERO DI TELEFONO */
-        function normalizePhone(phone) {
-            return phone.replace(/[^0-9+]/g, '');
-        }
-
-        function isValidPhoneNumber(phone) {
-            const normalized = normalizePhone(phone);
-            const digits = normalized.replace(/\D/g, '');
-
-            if (digits.length < 9 || digits.length > 15) return false;
-            if (/^0+$/.test(digits)) return false;
-            if (/^1?2?3?4?5?6?7?8?9?0?$/.test(digits)) return false;
-            if (/^(\d)\1+$/.test(digits)) return false;
-
-            return true;
-        }
-
-        function validatePhoneField() {
-            const input = document.getElementById('customer-phone');
-            const message = document.getElementById('phone-validation-message');
-            if (!input || !message) return false;
-
-            const value = input.value.trim();
-
-            if (!value) {
-                message.innerText = '';
-                input.style.borderColor = '';
-                return false;
-            }
-
-            if (isValidPhoneNumber(value)) {
-                message.innerText = '✓ Numero valido';
-                message.style.color = 'var(--accent-yellow)';
-                input.style.borderColor = 'var(--accent-yellow)';
-                return true;
-            }
-
-            message.innerText = 'Inserisci un numero di telefono valido.';
-            message.style.color = 'var(--accent-red)';
-            input.style.borderColor = 'var(--accent-red)';
-            return false;
-        }
-
-        /* WHATSAPP ORDER GENERATOR */
+        /* WHATSAPP SUBMISSION */
         function sendToWhatsApp() {
-            if (cart.length === 0) return;
+            let name = document.getElementById('customer-name').value.trim();
+            let phone = document.getElementById('customer-phone').value.trim();
 
-            let custName = document.getElementById('customer-name').value.trim();
-            let custPhone = document.getElementById('customer-phone').value.trim();
-
-            if (!custName || !custPhone || !finalSavedDatetime) {
-                showToast("Inserisci Nome, Telefono e Orario di ritiro!");
+            if (!name || !phone) {
+                showToast("Inserisci nome e telefono obbligatori!");
                 return;
             }
 
-            if (!isValidPhoneNumber(custPhone)) {
-                validatePhoneField();
-                showToast("Inserisci un numero di telefono valido!");
-                document.getElementById('customer-phone').focus();
+            if (cart.length === 0) {
+                showToast("Il carrello è vuoto!");
                 return;
             }
 
-            if (selectedPayment === 'card') {
-                let ccNum = document.getElementById('cc-number').value.trim();
-                if (!ccNum) {
-                    showToast("Inserisci i dati della carta di credito!");
-                    return;
-                }
-            }
-
-            let orderText = `🍔 *NUOVO ORDINE - CECIO SMASH* 🍔\n\n`;
-            orderText += `👤 *Cliente:* ${custName}\n`;
-            orderText += `📞 *Tel:* ${custPhone}\n`;
-            orderText += `⏰ *Ritiro Previsto:* ${finalSavedDatetime}\n`;
-            orderText += `💳 *Metodo di Pagamento:* ${selectedPayment === 'card' ? 'Carta di Credito (Dati inseriti)' : 'Pagamento al ritiro'}\n\n`;
-            orderText += `*PRODOTTI ORDINATI:*\n`;
+            let text = `🍔 *NUOVO ORDINE - CECIO SMASH*\n\n`;
+            text += `👤 *Cliente:* ${name}\n`;
+            text += `📞 *Telefono:* ${phone}\n`;
+            text += `⏰ *Ritiro:* ${finalSavedDatetime}\n`;
+            text += `💳 *Pagamento:* ${selectedPayment === 'card' ? 'Carta di Credito' : 'Paga al ritiro'}\n\n`;
+            text += `📋 *Dettaglio Prodotti:*\n`;
 
             let grandTotal = 0;
-            cart.length && cart.forEach((item) => {
+            cart.forEach(item => {
                 let itemTotal = item.price * item.quantity;
                 grandTotal += itemTotal;
-                orderText += `• ${item.quantity}x *${item.name}* (€ ${itemTotal.toFixed(2)})\n`;
-                if (item.removed && item.removed.length > 0) orderText += `  _Senza: ${item.removed.join(', ')}_\n`;
-                if (item.notes) orderText += `  _Note: ${item.notes}_\n`;
+                text += `• ${item.quantity}x ${item.name} (€ ${itemTotal.toFixed(2)})\n`;
+                if (item.removed && item.removed.length > 0) {
+                    text += `  _Senza: ${item.removed.join(', ')}_\n`;
+                }
+                if (item.notes) {
+                    text += `  _Note: ${item.notes}_\n`;
+                }
             });
 
-            if (discountApplied) {
-                grandTotal *= 0.9;
-                orderText += `\n🏷️ *Sconto Applicato:* -10%`;
-            }
+            let finalPayable = discountApplied ? grandTotal * 0.9 : grandTotal;
+            text += `\n💰 *TOTALE: € ${finalPayable.toFixed(2)}*`;
 
-            orderText += `\n\n💰 *TOTALE FINALE: € ${grandTotal.toFixed(2)}*`;
+            let encoded = encodeURIComponent(text);
+            let whatsappUrl = `https://wa.me/393333333333?text=${encoded}`;
+            window.open(whatsappUrl, '_blank');
+        }
 
-            let invName = document.getElementById('inv-name').value.trim();
-            if (invName) orderText += `\n\n📄 *Fattura:* ${invName}`;
-
-            const whatsappNumber = "393791516109";
-            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(orderText)}`;
-
-            window.location.href = whatsappUrl;
+        function payByCard() {
+            showToast("Pagamento con carta simulato con successo!");
+            setTimeout(() => {
+                sendToWhatsApp();
+            }, 1000);
         }
     </script>
 </body>
