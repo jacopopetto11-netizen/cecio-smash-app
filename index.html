@@ -1969,55 +1969,96 @@
         }
 
         function renderFavorites() {
-            const favList = document.getElementById('favorites-list');
-            if(!favList) return;
+            const list = document.getElementById('favorites-list');
+            if (!list) return;
+
             if (favorites.length === 0) {
-                favList.innerHTML = `
+                list.innerHTML = `
                     <div class="empty-state">
                         <i data-lucide="heart"></i>
-                        <h3>Nessun preferito</h3>
-                        <p>Aggiungi i tuoi piatti preferiti per trovarli qui subito.</p>
-                    </div>`;
+                        <h3>Nessun preferito salvato</h3>
+                        <p>Clicca sul cuore sui tuoi piatti preferiti per ritrovarli velocemente qui.</p>
+                    </div>
+                `;
                 lucide.createIcons();
                 return;
             }
+
             let html = '';
-            favorites.forEach(item => {
+            favorites.forEach(fav => {
                 html += `
-                    <div class="product-card">
-                        <div class="product-img-wrapper"><img src="${item.img}" class="product-img" alt="${item.name}"></div>
+                    <div class="product-card" onclick="openProduct('${fav.name}', '${fav.price}', 'Prodotto preferito', '${fav.img}')">
+                        <button class="fav-btn active" onclick="event.stopPropagation(); toggleFavorite(this, '${fav.name}', '${fav.price}', '${fav.img}')">
+                            <i data-lucide="heart"></i>
+                        </button>
+                        <div class="product-img-wrapper">
+                            <img src="${fav.img}" class="product-img" alt="${fav.name}" loading="lazy">
+                        </div>
                         <div class="product-info">
-                            <div class="product-name">${item.name}</div>
-                            <div class="product-price">€ ${item.price}</div>
+                            <div>
+                                <div class="product-name">${fav.name}</div>
+                                <div class="product-desc">Salvato nei tuoi preferiti</div>
+                            </div>
+                            <div class="product-bottom">
+                                <div class="product-price">€ ${parseFloat(fav.price).toFixed(2)}</div>
+                                <div class="quick-add-btn"><i data-lucide="plus" style="width: 16px; height: 16px;"></i></div>
+                            </div>
                         </div>
                     </div>
                 `;
             });
-            favList.innerHTML = html;
+            list.innerHTML = html;
+            lucide.createIcons();
         }
 
-        /* PRODUCT MODAL DETAILED VIEW */
-        function openProduct(name, priceStr, desc, imgUrl) {
-            currentProduct = { name, price: parseFloat(priceStr), img: imgUrl, desc };
-            
-            document.getElementById('detail-title').innerText = name;
-            document.getElementById('detail-desc').innerText = desc;
-            document.getElementById('detail-img').src = imgUrl;
-            document.getElementById('detail-price-label').innerText = `€ ${currentProduct.price.toFixed(2)}`;
-            
-            const grid = document.getElementById('ingredients-grid');
-            let ingredientsHTML = '';
-            
-            const sampleIngredients = ["Patty Smash", "American Cheese", "Insalata", "Pomodoro", "Bacon", "Salsa Cecio"];
-            sampleIngredients.forEach(ing => {
-                ingredientsHTML += `<div class="chip" onclick="toggleChip(this)"><span>${ing}</span><i data-lucide="check" style="width:14px;"></i></div>`;
-            });
-
-            grid.innerHTML = ingredientsHTML;
-            lucide.createIcons();
-            document.getElementById('detail-notes').value = '';
+        /* PRODUCT DETAIL & MODAL */
+        function openProduct(name, price, desc, img) {
+            currentProduct = { name, price: parseFloat(price), desc, img };
             count = 1;
-            updateTotals();
+
+            document.getElementById('detail-title').innerText = name;
+            document.getElementById('detail-price-label').innerText = '€ ' + currentProduct.price.toFixed(2);
+            document.getElementById('detail-desc').innerText = desc;
+            document.getElementById('detail-img').src = img;
+            document.getElementById('qty').innerText = count;
+            document.getElementById('detail-notes').value = '';
+
+            // Generate removal chips
+            let ingGrid = document.getElementById('ingredients-grid');
+            ingGrid.innerHTML = '';
+            
+            let possibleIngredients = [];
+            if (name.includes('CLASSIC') || name.includes('JAM') || name.includes('POLLOS')) {
+                possibleIngredients = ['Insalata', 'Pomodoro', 'Cipolla', 'Bacon', 'Pickles', 'Salsa Cecio'];
+            } else if (name.includes('CHEESEBURGER')) {
+                possibleIngredients = ['Cetriolini', 'Ketchup', 'Senape', 'Cheese'];
+            } else if (name.includes('HOT DOG')) {
+                possibleIngredients = ['Ketchup', 'Maionese', 'Bacon', 'Salsa Cecio'];
+            }
+
+            if (possibleIngredients.length > 0) {
+                possibleIngredients.forEach(ing => {
+                    let chip = document.createElement('div');
+                    chip.className = 'chip';
+                    chip.innerHTML = `<span>${ing}</span><i data-lucide="check" style="width:14px; height:14px;"></i>`;
+                    chip.onclick = function() {
+                        this.classList.toggle('removed');
+                        let icon = this.querySelector('i');
+                        if(this.classList.contains('removed')) {
+                            icon.setAttribute('data-lucide', 'x');
+                        } else {
+                            icon.setAttribute('data-lucide', 'check');
+                        }
+                        lucide.createIcons();
+                    };
+                    ingGrid.appendChild(chip);
+                });
+                lucide.createIcons();
+            } else {
+                ingGrid.innerHTML = '<span style="color:var(--text-muted); font-size:12px;">Nessun ingrediente modificabile per questo articolo.</span>';
+            }
+
+            updateModalTotal();
             document.getElementById('detail-view').classList.add('active');
         }
 
@@ -2025,23 +2066,29 @@
             document.getElementById('detail-view').classList.remove('active');
         }
 
-        function toggleChip(el) {
-            el.classList.toggle('removed');
+        function increment() {
+            count++;
+            document.getElementById('qty').innerText = count;
+            updateModalTotal();
         }
 
-        function increment() { count++; updateTotals(); }
-        function decrement() { if(count > 1) { count--; updateTotals(); } }
+        function decrement() {
+            if (count > 1) {
+                count--;
+                document.getElementById('qty').innerText = count;
+                updateModalTotal();
+            }
+        }
 
-        function updateTotals() {
-            document.getElementById('qty').innerText = count;
-            const total = (currentProduct.price * count).toFixed(2);
-            document.getElementById('total-price-bar').innerText = `€ ${total}`;
+        function updateModalTotal() {
+            let total = currentProduct.price * count;
+            document.getElementById('total-price-bar').innerText = '€ ' + total.toFixed(2);
         }
 
         function addToCartFromModal() {
             let removedIngredients = [];
-            document.querySelectorAll('#ingredients-grid .chip.removed span').forEach(chip => {
-                removedIngredients.push(chip.innerText);
+            document.querySelectorAll('#ingredients-grid .chip.removed').forEach(chip => {
+                removedIngredients.push(chip.querySelector('span').innerText);
             });
 
             let notes = document.getElementById('detail-notes').value.trim();
@@ -2050,73 +2097,94 @@
                 name: currentProduct.name,
                 price: currentProduct.price,
                 quantity: count,
-                img: currentProduct.img,
                 removed: removedIngredients,
-                notes: notes
+                notes: notes,
+                img: currentProduct.img
             });
 
-            closeProduct();
             updateCartBadge();
-            showToast("Prodotto aggiunto al carrello!");
+            closeProduct();
+            showToast("Aggiunto al carrello!");
         }
 
-        /* CART RENDER & CHECKOUT ENGINE */
+        /* CART RENDERING */
         function renderCart() {
             const container = document.getElementById('cart-container');
-            if(!container) return;
-            
+            if (!container) return;
+
             if (cart.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
                         <i data-lucide="shopping-bag"></i>
-                        <h3>Carrello Vuoto</h3>
-                        <p>Esplora il nostro menu e ordina subito i tuoi burger preferiti!</p>
+                        <h3>Il tuo carrello è vuoto</h3>
+                        <p>Aggiungi qualche smash burger o patatina croccante per iniziare!</p>
+                        <button class="primary-cta" style="margin-top: 20px;" onclick="openSection('menu')">VAI AL MENU</button>
                     </div>
                 `;
                 lucide.createIcons();
                 return;
             }
 
-            let html = '<div style="display: flex; flex-direction: column; gap: 12px;">';
-            let grandTotal = 0;
+            let subtotal = 0;
+            let html = '<div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">';
 
             cart.forEach((item, index) => {
                 let itemTotal = item.price * item.quantity;
-                grandTotal += itemTotal;
+                subtotal += itemTotal;
 
-                let customizations = '';
-                if (item.removed.length > 0) {
-                    customizations += `<div style="font-size: 11px; color: var(--accent-red); margin-top: 2px;">Senza: ${item.removed.join(', ')}</div>`;
+                let modifications = '';
+                if(item.removed && item.removed.length > 0) {
+                    modifications += `<div style="font-size: 11px; color: var(--accent-red); margin-top: 2px;">Senza: ${item.removed.join(', ')}</div>`;
                 }
-                if (item.notes) {
-                    customizations += `<div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Note: ${item.notes}</div>`;
+                if(item.notes) {
+                    modifications += `<div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Note: ${item.notes}</div>`;
                 }
 
                 html += `
-                    <div class="checkout-section" style="margin-bottom:0; display:flex; justify-content:space-between; align-items:center;">
-                        <div>
-                            <div style="font-weight: 800; font-size: 15px;">${item.quantity}x ${item.name}</div>
-                            ${customizations}
-                            <div style="color: var(--accent-yellow); font-weight: 800; margin-top: 4px; font-size: 14px;">€ ${itemTotal.toFixed(2)}</div>
+                    <div style="background: var(--surface-card); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 14px; display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <img src="${item.img}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;" alt="${item.name}">
+                            <div>
+                                <div style="font-size: 14px; font-weight: 800;">${item.name}</div>
+                                <div style="font-size: 12px; color: var(--accent-yellow); font-weight: 700;">€ ${item.price.toFixed(2)} x ${item.quantity}</div>
+                                ${modifications}
+                            </div>
                         </div>
-                        <button onclick="removeFromCart(${index})" style="background: none; border: none; color: var(--accent-red); cursor: pointer; padding: 8px;">
-                            <i data-lucide="trash-2" style="width: 18px;"></i>
-                        </button>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 14px; font-weight: 900;">€ ${itemTotal.toFixed(2)}</span>
+                            <button onclick="removeFromCart(${index})" style="background: rgba(255,51,102,0.1); border: 1px solid rgba(255,51,102,0.3); color: var(--accent-red); width: 30px; height: 30px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                                <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+                            </button>
+                        </div>
                     </div>
                 `;
             });
+            html += '</div>';
 
-            let finalPayable = discountApplied ? grandTotal * 0.9 : grandTotal;
-            const checkoutTotalBanner = document.getElementById('checkout-total-banner');
-            if(checkoutTotalBanner) checkoutTotalBanner.innerText = `€ ${finalPayable.toFixed(2)}`;
+            let discountAmount = discountApplied ? subtotal * 0.10 : 0;
+            let finalTotal = subtotal - discountAmount;
 
             html += `
-                <div style="margin-top: 12px; border-top: 1px solid var(--border-color); padding-top: 16px; display: flex; justify-content: space-between; font-size: 16px; font-weight: 800;">
-                    <span>Totale Provvisorio:</span>
-                    <span style="color: var(--accent-yellow);">€ ${finalPayable.toFixed(2)}</span>
+                <div class="checkout-section" style="margin-bottom: 24px;">
+                    <div class="checkout-row" style="margin-bottom: 8px; font-size: 14px; color: var(--text-muted);">
+                        <span>Subtotale</span>
+                        <span>€ ${subtotal.toFixed(2)}</span>
+                    </div>
+                    ${discountApplied ? `
+                    <div class="checkout-row" style="margin-bottom: 8px; font-size: 14px; color: var(--accent-yellow);">
+                        <span>Sconto Promo (10%)</span>
+                        <span>- € ${discountAmount.toFixed(2)}</span>
+                    </div>` : ''}
+                    <div class="checkout-row" style="font-size: 18px; font-weight: 900; border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 8px;">
+                        <span>Totale Ordine</span>
+                        <span style="color: var(--accent-yellow);">€ ${finalTotal.toFixed(2)}</span>
+                    </div>
                 </div>
-                <button class="btn-main" style="width: 100%; margin-top: 16px;" onclick="openCheckout()">VAI AL CHECKOUT</button>
-            </div>`;
+                <button class="btn-main" onclick="openCheckout()" style="width: 100%; justify-content: center; padding: 18px; font-size: 16px;">
+                    <span>PROCEDI AL CHECKOUT</span>
+                    <i data-lucide="arrow-right"></i>
+                </button>
+            `;
 
             container.innerHTML = html;
             lucide.createIcons();
@@ -2125,205 +2193,254 @@
         function removeFromCart(index) {
             cart.splice(index, 1);
             updateCartBadge();
-            showToast("Prodotto rimosso");
             renderCart();
+            showToast("Articolo rimosso");
         }
 
-        function openCheckout() { document.getElementById('checkout-view').classList.add('active'); }
-        function closeCheckout() { document.getElementById('checkout-view').classList.remove('active'); }
+        /* CHECKOUT & WHATSAPP INTEGRATION */
+        function openCheckout() {
+            if (cart.length === 0) {
+                showToast("Il carrello è vuoto!");
+                return;
+            }
+            let subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            let discountAmount = discountApplied ? subtotal * 0.10 : 0;
+            let finalTotal = subtotal - discountAmount;
+
+            document.getElementById('checkout-total-banner').innerText = '€ ' + finalTotal.toFixed(2);
+            document.getElementById('checkout-view').classList.add('active');
+        }
+
+        function closeCheckout() {
+            document.getElementById('checkout-view').classList.remove('active');
+        }
 
         function setPaymentMethod(method) {
             selectedPayment = method;
-            document.getElementById('pay-card').classList.toggle('active', method === 'card');
-            document.getElementById('pay-cash').classList.toggle('active', method === 'cash');
+            document.getElementById('pay-card').classList.remove('active');
+            document.getElementById('pay-cash').classList.remove('active');
 
             const cardBox = document.getElementById('card-details-box');
-            const payButton = document.getElementById('btn-pay-card');
+            const btnPayCard = document.getElementById('btn-pay-card');
 
             if (method === 'card') {
+                document.getElementById('pay-card').classList.add('active');
                 cardBox.classList.add('active');
-                payButton.style.display = 'flex';
-                updatePayButtonState();
+                btnPayCard.style.display = 'flex';
             } else {
+                document.getElementById('pay-cash').classList.add('active');
                 cardBox.classList.remove('active');
-                payButton.style.display = 'none';
-                payButton.disabled = true;
-            }
-        }
-
-        function updatePayButtonState() {
-            const btn = document.getElementById('btn-pay-card');
-            if(!btn) return;
-            if (selectedPayment === 'cash') {
-                btn.disabled = false;
-                return;
-            }
-            const ccNum = document.getElementById('cc-number').value.trim();
-            const ccExp = document.getElementById('cc-expiry').value.trim();
-            const ccCvv = document.getElementById('cc-cvv').value.trim();
-
-            if (ccNum.length >= 15 && ccExp.length >= 4 && ccCvv.length >= 3) {
-                btn.disabled = false;
-            } else {
-                btn.disabled = true;
+                btnPayCard.style.display = 'none';
             }
         }
 
         function validatePhoneField() {
             const phoneInput = document.getElementById('customer-phone');
             const msg = document.getElementById('phone-validation-message');
-            if(!phoneInput || !msg) return true;
-            const val = phoneInput.value.trim();
-            if (val.length < 5) {
-                msg.innerText = "Inserisci un numero valido";
-                msg.style.color = "var(--accent-red)";
+            if(!phoneInput) return true;
+            let val = phoneInput.value.trim();
+            let digitsOnly = val.replace(/\D/g, '');
+
+            if(digitsOnly.length < 9) {
+                phoneInput.style.borderColor = 'var(--accent-red)';
+                msg.style.color = 'var(--accent-red)';
+                msg.innerText = 'Inserisci un numero di telefono valido.';
                 return false;
             } else {
-                msg.innerText = "Numero valido ✓";
-                msg.style.color = "#4ade80";
+                phoneInput.style.borderColor = 'var(--border-color)';
+                msg.style.color = '#4ade80';
+                msg.innerText = 'Numero valido ✓';
                 return true;
             }
         }
 
-        /* DATETIME PICKER ENGINE */
+        function updatePayButtonState() {
+            const ccNum = document.getElementById('cc-number').value.trim();
+            const ccExp = document.getElementById('cc-expiry').value.trim();
+            const ccCvv = document.getElementById('cc-cvv').value.trim();
+            const btn = document.getElementById('btn-pay-card');
+
+            if(ccNum.length >= 12 && ccExp.length >= 4 && ccCvv.length >= 3) {
+                btn.removeAttribute('disabled');
+            } else {
+                btn.setAttribute('disabled', 'true');
+            }
+        }
+
+        function payByCard() {
+            const name = document.getElementById('customer-name').value.trim();
+            if(!name) {
+                showToast("Inserisci nome e cognome!");
+                document.getElementById('customer-name').focus();
+                return;
+            }
+            if(!validatePhoneField()) {
+                showToast("Verifica il numero di telefono!");
+                document.getElementById('customer-phone').focus();
+                return;
+            }
+
+            showToast("Pagamento carta completato con successo!");
+            setTimeout(() => {
+                sendToWhatsApp(true);
+            }, 1000);
+        }
+
+        function sendToWhatsApp(paidOnline = false) {
+            const name = document.getElementById('customer-name').value.trim();
+            const phone = document.getElementById('customer-phone').value.trim();
+
+            if(!name) {
+                showToast("Inserisci nome e cognome!");
+                document.getElementById('customer-name').focus();
+                return;
+            }
+            if(!validatePhoneField()) {
+                showToast("Verifica il numero di telefono!");
+                document.getElementById('customer-phone').focus();
+                return;
+            }
+
+            let subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            let discountAmount = discountApplied ? subtotal * 0.10 : 0;
+            let finalTotal = subtotal - discountAmount;
+
+            let text = `🍔 *NUOVO ORDINE - CECIO SMASH* 🍔\n\n`;
+            text += `👤 *Cliente:* ${name}\n`;
+            text += `📞 *Telefono:* ${phone}\n`;
+            text += `⏰ *Orario Ritiro:* ${finalSavedDatetime || 'Non specificato (Prima possibile)'}\n`;
+            text += `💳 *Pagamento:* ${paidOnline ? 'Carta di Credito (Pagato)' : (selectedPayment === 'card' ? 'Carta di Credito' : 'Contanti al ritiro')}\n\n`;
+            
+            text += `🛒 *PRODOTTI:* \n`;
+            cart.forEach((item, idx) => {
+                text += `${idx+1}. ${item.name} x${item.quantity} (€ ${(item.price * item.quantity).toFixed(2)})\n`;
+                if(item.removed && item.removed.length > 0) {
+                    text += `   ❌ Senza: ${item.removed.join(', ')}\n`;
+                }
+                if(item.notes) {
+                    text += `   📝 Note: ${item.notes}\n`;
+                }
+            });
+
+            text += `\n💰 *TOTALE:* € ${finalTotal.toFixed(2)}`;
+
+            let encodedText = encodeURIComponent(text);
+            // Il tuo numero impostato: 3791516109
+            let whatsappUrl = `https://wa.me/393791516109?text=${encodedText}`;
+
+            cart = [];
+            updateCartBadge();
+            closeCheckout();
+
+            window.open(whatsappUrl, '_blank');
+        }
+
+        /* DATETIME & MODALS PICKER */
         function initDatetimePicker() {
             const daysContainer = document.getElementById('days-container');
             const timesContainer = document.getElementById('times-container');
             if(!daysContainer || !timesContainer) return;
 
-            let daysHTML = '';
+            let daysHtml = '';
             let today = new Date();
 
-            for (let i = 0; i < 7; i++) {
+            for(let i=0; i<7; i++) {
                 let d = new Date(today);
                 d.setDate(today.getDate() + i);
                 let dayName = daysNames[d.getDay()];
                 let dayNum = d.getDate();
                 let monthName = monthsNames[d.getMonth()];
 
-                daysHTML += `
-                    <div class="day-card ${i === 0 ? 'active' : ''}" onclick="selectDay(this, ${i}, '${dayName} ${dayNum} ${monthName}')">
+                daysHtml += `
+                    <div class="day-card ${i === selectedDayIndex ? 'active' : ''}" onclick="selectDayCard(${i}, '${dayName} ${dayNum} ${monthName}')">
                         <div>${dayName}</div>
                         <div class="day-num">${dayNum}</div>
-                        <div style="font-size:9px;">${monthName}</div>
+                        <div>${monthName}</div>
                     </div>
                 `;
             }
-            daysContainer.innerHTML = daysHTML;
+            daysContainer.innerHTML = daysHtml;
 
-            let timesHTML = '';
-            let slots = ["12:00", "12:30", "13:00", "13:30", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00"];
-            slots.forEach((t, idx) => {
-                timesHTML += `<div class="time-chip ${idx === 1 ? 'active' : ''}" onclick="selectTime(this, '${t}')">${t}</div>`;
+            let timesHtml = '';
+            let timesList = ["12:00", "12:30", "13:00", "13:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00", "22:30", "23:00"];
+            
+            timesList.forEach(t => {
+                timesHtml += `
+                    <div class="time-chip ${t === selectedTimeValue ? 'active' : ''}" onclick="selectTimeChip('${t}')">${t}</div>
+                `;
             });
-            timesContainer.innerHTML = timesHTML;
+            timesContainer.innerHTML = timesHtml;
 
-            finalSavedDatetime = `Oggi, ore 12:30`;
-        }
-
-        function selectDay(el, index, label) {
-            document.querySelectorAll('.day-card').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
-            selectedDayIndex = index;
-        }
-
-        function selectTime(el, timeStr) {
-            document.querySelectorAll('.time-chip').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
-            selectedTimeValue = timeStr;
-        }
-
-        function openDatetimeModal() { document.getElementById('datetime-modal').style.display = 'flex'; }
-        function closeDatetimeModal() { document.getElementById('datetime-modal').style.display = 'none'; }
-        
-        function saveDatetime() {
-            finalSavedDatetime = `Ore ${selectedTimeValue}`;
+            let initialDateStr = `${daysNames[today.getDay()]} ${today.getDate()} ${monthsNames[today.getMonth()]}`;
+            finalSavedDatetime = `${initialDateStr} ore ${selectedTimeValue}`;
             document.getElementById('selected-datetime-label').innerText = finalSavedDatetime;
-            document.getElementById('selected-datetime-label').style.color = "var(--text-color)";
-            closeDatetimeModal();
-            showToast("Orario di ritiro salvato!");
         }
 
-        /* DISCOUNT MODAL */
+        let tempSelectedDayStr = "";
+        function selectDayCard(index, dayStr) {
+            selectedDayIndex = index;
+            tempSelectedDayStr = dayStr;
+            let cards = document.querySelectorAll('.day-card');
+            cards.forEach((c, idx) => {
+                if(idx === index) c.classList.add('active');
+                else c.classList.remove('active');
+            });
+        }
+
+        function selectTimeChip(timeStr) {
+            selectedTimeValue = timeStr;
+            let chips = document.querySelectorAll('.time-chip');
+            chips.forEach(c => {
+                if(c.innerText === timeStr) c.classList.add('active');
+                else c.classList.remove('active');
+            });
+        }
+
+        function openDatetimeModal() {
+            document.getElementById('datetime-modal').style.display = 'flex';
+        }
+        function closeDatetimeModal() {
+            document.getElementById('datetime-modal').style.display = 'none';
+        }
+        function saveDatetime() {
+            let today = new Date();
+            let d = new Date(today);
+            d.setDate(today.getDate() + selectedDayIndex);
+            let dayName = daysNames[d.getDay()];
+            let dayNum = d.getDate();
+            let monthName = monthsNames[d.getMonth()];
+
+            finalSavedDatetime = `${dayName} ${dayNum} ${monthName} ore ${selectedTimeValue}`;
+            document.getElementById('selected-datetime-label').innerText = finalSavedDatetime;
+            closeDatetimeModal();
+        }
+
         function openDiscountModal() { document.getElementById('discount-modal').style.display = 'flex'; }
         function closeDiscountModal() { document.getElementById('discount-modal').style.display = 'none'; }
-        
         function saveDiscountData() {
             let code = document.getElementById('disc-input').value.trim().toUpperCase();
-            if (code === "SMASH10" || code === "CECIO10") {
+            if(code === 'SMASH10' || code === 'CECIO10') {
                 discountApplied = true;
-                document.getElementById('discount-status-label').innerText = "Sconto 10% Applicato ✓";
-                document.getElementById('discount-status-label').style.color = "#4ade80";
-                showToast("Codice promo applicato con successo!");
-                closeDiscountModal();
-                renderCart();
+                document.getElementById('discount-status-label').innerText = 'Codice 10% Applicato ✓';
+                document.getElementById('discount-status-label').style.color = '#4ade80';
+                showToast("Sconto del 10% applicato!");
+                openCheckout(); // Aggiorna banner totale
             } else {
                 showToast("Codice promo non valido");
             }
+            closeDiscountModal();
         }
 
-        /* INVOICE MODAL */
         function openInvoiceModal() { document.getElementById('invoice-modal').style.display = 'flex'; }
         function closeInvoiceModal() { document.getElementById('invoice-modal').style.display = 'none'; }
-        
         function saveInvoiceData() {
             let name = document.getElementById('inv-name').value.trim();
-            if (name) {
-                document.getElementById('invoice-status-label').innerText = "Configurata ✓";
-                document.getElementById('invoice-status-label').style.color = "#4ade80";
+            if(name) {
+                document.getElementById('invoice-status-label').innerText = 'Dati inseriti ✓';
+                document.getElementById('invoice-status-label').style.color = '#4ade80';
                 showToast("Dati di fatturazione salvati");
             }
             closeInvoiceModal();
-        }
-
-        /* WHATSAPP SUBMISSION */
-        function sendToWhatsApp() {
-            let name = document.getElementById('customer-name').value.trim();
-            let phone = document.getElementById('customer-phone').value.trim();
-
-            if (!name || !phone) {
-                showToast("Inserisci nome e telefono obbligatori!");
-                return;
-            }
-
-            if (cart.length === 0) {
-                showToast("Il carrello è vuoto!");
-                return;
-            }
-
-            let text = `🍔 *NUOVO ORDINE - CECIO SMASH*\n\n`;
-            text += `👤 *Cliente:* ${name}\n`;
-            text += `📞 *Telefono:* ${phone}\n`;
-            text += `⏰ *Ritiro:* ${finalSavedDatetime}\n`;
-            text += `💳 *Pagamento:* ${selectedPayment === 'card' ? 'Carta di Credito' : 'Paga al ritiro'}\n\n`;
-            text += `📋 *Dettaglio Prodotti:*\n`;
-
-            let grandTotal = 0;
-            cart.forEach(item => {
-                let itemTotal = item.price * item.quantity;
-                grandTotal += itemTotal;
-                text += `• ${item.quantity}x ${item.name} (€ ${itemTotal.toFixed(2)})\n`;
-                if (item.removed && item.removed.length > 0) {
-                    text += `  _Senza: ${item.removed.join(', ')}_\n`;
-                }
-                if (item.notes) {
-                    text += `  _Note: ${item.notes}_\n`;
-                }
-            });
-
-            let finalPayable = discountApplied ? grandTotal * 0.9 : grandTotal;
-            text += `\n💰 *TOTALE: € ${finalPayable.toFixed(2)}*`;
-
-            let encoded = encodeURIComponent(text);
-            let whatsappUrl = `https://wa.me/393333333333?text=${encoded}`;
-            window.open(whatsappUrl, '_blank');
-        }
-
-        function payByCard() {
-            showToast("Pagamento con carta simulato con successo!");
-            setTimeout(() => {
-                sendToWhatsApp();
-            }, 1000);
         }
     </script>
 </body>
